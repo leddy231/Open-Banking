@@ -1,6 +1,8 @@
 # Open-Bakning
 Projekt Open Banking
 
+SE Issues för workflow.
+
 MVP: ansluta bankerna, hämta ut samtliga data.
 
 Krav: Samtliga storbankers api
@@ -26,6 +28,8 @@ Länkar till alla bankers APIsidor:
 Ta ut vilka som funkar med varrandra, vilka behöver special hantering
 
 Kolla skatteverket om det finns api
+
+
 
 Nätverks del
 
