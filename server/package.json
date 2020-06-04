@@ -1,0 +1,14 @@
+{
+  "name": "bankon-server",
+  "version": "0.0.1",
+  "description": "RnD server",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
