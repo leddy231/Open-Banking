@@ -4,6 +4,8 @@ Projekt Open Banking
 SE Issues för workflow.
 Data Foulder: https://drive.google.com/drive/folders/1H_Pdt7EmuEMAPjYECzlvcUC2P2fEBK6A?usp=sharing
 
+Länkadress för redirrect auth: https://bankon.leddy231.se/
+
 MVP: ansluta bankerna, hämta ut samtliga data.
 
 Krav: Samtliga storbankers api
