@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: "Roboto", sans-serif;
+            }
+            .row {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+            }
+            .col {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+            }
+            .button {
+                border-radius: 5px;
+                background-color: #166cb8;
+                color: white;
+                padding: 10px;
+                box-shadow: 0 3px 3px rgba(0,0,0,0.12), 0 3px 3px rgba(0,0,0,0.24);
+                transition: all 0.2s cubic-bezier(.25,.8,.25,1);
+                text-decoration: none;
+            }
+            .button:hover{
+                box-shadow: 0 6px 6px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+                cursor: pointer;
+            }
+            table {
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            td {
+                padding: 5px;
+                border-bottom: 1px solid rgb(168, 167, 167);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="col" id="app">
+            <div class="row">
+                <table>
+                    <thead>
+                        <tr>
+                            <td>Sandbox Identification Number (Copy one for next step)</td>
+                            <td>PSU-Corporate-ID</td>
+                            <td>Corporate access</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>9311219639</td>
+                            <td>40073144970009</td>
+                            <td>Access to one account</td>
+                        </tr>
+                        <tr>
+                            <td>9311219589</td>
+                            <td>40073144970009</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>8811215477</td>
+                            <td>...</td>
+                            <td>Access to two accounts</td>
+                        </tr>
+                        <tr>
+                            <td>8811212862</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                        <tr>
+                            <td>8311211356</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <a class="button" href="https://api-sandbox.sebgroup.com/mga/sps/oauth/oauth20/authorize?client_id=N48Hmiaxd7Jdm88CL37c&scope=psd2_accounts psd2_payments&redirect_uri=https%3A%2F%2Fbankon.leddy231.se%2Fauth%3Fbank%3Dseb&response_type=code">
+                    SEB Login
+                </a>
+            </div>
+        </div>
+        <!--
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    message: 'Hello Vue!'
+                },
+            })
+        </script>
+        -->
+    </body>
+</html>
