@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "express": "^4.17.1",
+    "form-data": "^3.0.0",
     "nodemon": "^2.0.4",
     "request": "^2.88.2"
   }

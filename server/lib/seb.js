@@ -1,8 +1,12 @@
 
 import { cnst } from  './wrangler.js';
 import axios from 'axios';
+import qs from 'querystring'
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+const client_id = 'N48Hmiaxd7Jdm88CL37c'
+const client_secret = 'mT9Bki2coWwUeugyIqDX'
 
 const sebAccountFilter = {
     "bank": cnst("seb"),
@@ -25,7 +29,7 @@ const sebAccountFilter = {
     "account_bic": "bic",
 }
 
-async function auth() {
+async function decoupledAuth() {
     
     try {
         //https://developer.sebgroup.com/node/4347
@@ -48,8 +52,38 @@ async function auth() {
     }
 }
 
+async function parseAuthCode(code) {
+    try {
+        //https://developer.sebgroup.com/node/1655
+        let url = 'https://api-sandbox.sebgroup.com/mga/sps/oauth/oauth20/token';
+        let data = { 
+            client_id: client_id,
+            client_secret: client_secret,
+            code: code,
+            redirect_uri: 'https://bankon.leddy231.se/auth?bank=seb',
+            grant_type: "authorization_code"
+        }
+
+        let headers = { 
+            accept: 'application/json', 
+            'content-type': 'application/x-www-form-urlencoded'
+        }
+        const response = await axios.post(url, qs.stringify(data), {headers: headers});
+
+        return response
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+const auth = {
+    redirectUrl: `https://api-sandbox.sebgroup.com/mga/sps/oauth/oauth20/authorize?client_id=${client_id}&scope=psd2_accounts psd2_payments&redirect_uri=${encodeURIComponent("https://bankon.leddy231.se/auth?bank=seb")}&response_type=code`,
+    onRedirect: parseAuthCode
+}
+
 export default {
     'name': 'seb',
     'accountFilter': sebAccountFilter,
-    'auth': auth
+    'auth': auth,
+
 }
