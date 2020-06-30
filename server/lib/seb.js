@@ -1,5 +1,6 @@
 
-import { cnst } from  './wrangler.js';
+import { cnst, wrangle } from  './wrangler.js';
+import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import qs from 'querystring'
 
@@ -52,14 +53,35 @@ async function decoupledAuth() {
     }
 }
 
-async function parseAuthCode(code) {
+async function getAccounts(req) {
+    try {
+        //https://developer.sebgroup.com/node/4998
+        let url = "https://api-sandbox.sebgroup.com/ais/v6/identified2/accounts";
+        let headers = { 
+            accept: 'application/json', 
+            'X-Request-ID': uuid(),
+            'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+            'Authorization': 'Bearer ' + req.query.token
+        }
+        const response = await axios.get(url, {headers: headers});
+        var {accounts} = response.data
+        accounts = accounts.map((acc) => 
+            wrangle(acc, sebAccountFilter)
+        )
+        return accounts
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function parseAuthCode(req) {
     try {
         //https://developer.sebgroup.com/node/1655
         let url = 'https://api-sandbox.sebgroup.com/mga/sps/oauth/oauth20/token';
         let data = { 
             client_id: client_id,
             client_secret: client_secret,
-            code: code,
+            code: req.query.code,
             redirect_uri: 'https://bankon.leddy231.se/auth?bank=seb',
             grant_type: "authorization_code"
         }
@@ -70,20 +92,30 @@ async function parseAuthCode(code) {
         }
         const response = await axios.post(url, qs.stringify(data), {headers: headers});
 
-        return response
+        return response.data
     } catch (error) {
         console.log(error)
     }
 }
 
 const auth = {
-    redirectUrl: `https://api-sandbox.sebgroup.com/mga/sps/oauth/oauth20/authorize?client_id=${client_id}&scope=psd2_accounts psd2_payments&redirect_uri=${encodeURIComponent("https://bankon.leddy231.se/auth?bank=seb")}&response_type=code`,
-    onRedirect: parseAuthCode
+    redirect: {
+        url: 'https://api-sandbox.sebgroup.com/mga/sps/oauth/oauth20/authorize?' + qs.encode({
+            client_id: client_id,
+            scope: "psd2_accounts psd2_payments",
+            redirect_uri: "https://bankon.leddy231.se/auth?bank=seb",
+            response_type: "code"
+        }),
+        parse: parseAuthCode
+    }
 }
 
 export default {
     'name': 'seb',
     'accountFilter': sebAccountFilter,
     'auth': auth,
+    'accounts': {
+        get: getAccounts
+    }
 
 }

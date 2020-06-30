@@ -1,4 +1,4 @@
-import  {cnst, map, filter} from  './wrangler';
+import  {cnst, map, filter} from  './wrangler.js';
 
 const nordeaAccountFilter = {
     "bank": cnst("nordea"),

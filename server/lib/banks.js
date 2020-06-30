@@ -1,7 +1,7 @@
-import { nordea } from './seb'
-import { seb } from './nordea'
+import seb from './seb.js'
+import { nordea } from './nordea.js'
 
-export const banks = {
+export default {
     'seb': seb,
     'nordea': nordea
 }
