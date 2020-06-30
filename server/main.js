@@ -1,28 +1,40 @@
-var path = require('path');
-var request = require("request");
-const express = require('express')
+import path from 'path'
+import express from 'express'
+import banks from './lib/banks.js'
 const app = express();
-
 
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.send("Hello bankon!");
+  res.sendFile(path.join(process.cwd() + '/sites/login.html'));
 });
 
-app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname + '/sites/login.html'));
-});
+app.get('/banks', async (req, res) => {
+  res.json(Object.keys(banks));
+})
 
-app.get('/auth', (req, res, next) => {
-  if(req.query.bank == 'seb') {
-    const code = req.query.code;
-    getAccessToken(code).then(response => {
-        res.json(response)
-    })
+app.use('/api', (req, res, next) => {
+  let bank = banks[req.query.bank]
+  if(bank === null) {
+    res.json({error: 'Unknown bank'})
   } else {
-    next();
+    req.bank = bank
+    next()
   }
+})
+
+app.get('/api/redirecturl', async (req, res) => {
+  res.json({url: req.bank.auth.redirect.url})
+})
+
+app.get('/api/auth', async (req, res) => {
+  let response = await req.bank.auth.redirect.parse(req)
+  res.redirect(`/accounts?bank=${req.bank.name}&token=${response.access_token}`)
+})
+
+app.get('/api/accounts', async (req, res) => {
+  let accounts = await req.bank.accounts.get(req)
+  res.json(accounts)
 })
 
 app.get('/*', (req, res) => {
@@ -38,31 +50,3 @@ app.get('/*', (req, res) => {
 app.listen(8000, () => {
   console.log('Example app listening on port 8000!')
 });
-
-function getAccessToken(code) {
-  return new Promise((resolve, reject) => {
-    //https://developer.sebgroup.com/node/1655
-    var options = { 
-      method: 'POST',
-      url: 'https://api-sandbox.sebgroup.com/mga/sps/oauth/oauth20/token',
-      headers: { 
-        accept: 'application/json', 'content-type': 'application/x-www-form-urlencoded'
-      },
-      form: { 
-        client_id: 'N48Hmiaxd7Jdm88CL37c',
-        client_secret: 'mT9Bki2coWwUeugyIqDX',
-        code: code,
-        redirect_uri: 'https://bankon.leddy231.se/auth?bank=seb',
-        grant_type: 'authorization_code'
-      }
-    };
-
-    request(options, (error, response, body) => {
-      if(error) {
-        console.error('Failed: %s', error.message);
-        reject(error);
-      }
-      resolve(JSON.parse(body));
-    });
-  })
-}
