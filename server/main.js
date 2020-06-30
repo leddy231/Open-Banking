@@ -13,26 +13,26 @@ app.get('/banks', async (req, res) => {
   res.json(Object.keys(banks));
 })
 
-app.use('/api', (req, res, next) => {
+function bankquery(req, res, next) {
   let bank = banks[req.query.bank]
-  if(bank === null) {
-    res.json({error: 'Unknown bank'})
-  } else {
+  if(bank != null) {
     req.bank = bank
     next()
+  } else {
+    res.json({error: 'Unknown bank'})
   }
-})
+}
 
-app.get('/api/redirecturl', async (req, res) => {
+app.get('/redirecturl', bankquery, async (req, res) => {
   res.json({url: req.bank.auth.redirect.url})
 })
 
-app.get('/api/auth', async (req, res) => {
+app.get('/auth', bankquery, async (req, res) => {
   let response = await req.bank.auth.redirect.parse(req)
   res.redirect(`/accounts?bank=${req.bank.name}&token=${response.access_token}`)
 })
 
-app.get('/api/accounts', async (req, res) => {
+app.get('/accounts', bankquery, async (req, res) => {
   let accounts = await req.bank.accounts.get(req)
   res.json(accounts)
 })

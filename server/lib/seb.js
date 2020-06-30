@@ -111,10 +111,9 @@ const auth = {
 }
 
 export default {
-    'name': 'seb',
-    'accountFilter': sebAccountFilter,
-    'auth': auth,
-    'accounts': {
+    name: 'seb',
+    auth: auth,
+    accounts: {
         get: getAccounts
     }
 
