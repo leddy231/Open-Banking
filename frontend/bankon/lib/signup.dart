@@ -1,28 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'signup.dart';
-
-void main() => runApp(new BankonApp());
-
-class BankonApp extends StatelessWidget {
+class SignupPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: <String, WidgetBuilder>{
-        '/signup': (BuildContext context) => new SignupPage()
-      },
-      home: new MainHomePage(),
-    );
-  }
+  _SignupPageState createState() => _SignupPageState();
 }
 
-class MainHomePage extends StatefulWidget {
-  @override
-  _MainHomePageState createState() => new _MainHomePageState();
-}
-
-class _MainHomePageState extends State<MainHomePage> {
+class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -189,9 +172,7 @@ class _MainHomePageState extends State<MainHomePage> {
                 ),
                 SizedBox(width: 5.0),
                 InkWell(
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/signup');
-                    },
+                    onTap: () {},
                     child: Text(
                       'Register',
                       style: TextStyle(
