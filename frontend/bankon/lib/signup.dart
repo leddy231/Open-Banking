@@ -19,21 +19,13 @@ class _SignupPageState extends State<SignupPage> {
                   Container(
                     padding: EdgeInsets.fromLTRB(30.0, 110.0, 0.0, 0.0),
                     child: Text(
-                      'Hello',
+                      'Signup',
                       style: TextStyle(
                           fontSize: 70.0, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(31.0, 175.0, 0.0, 0.0),
-                    child: Text(
-                      'There',
-                      style: TextStyle(
-                          fontSize: 70.0, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(210.0, 175.0, 0.0, 0.0),
+                    padding: EdgeInsets.fromLTRB(250.0, 110.0, 0.0, 0.0),
                     child: Text(
                       '.',
                       style: TextStyle(
@@ -64,7 +56,7 @@ class _SignupPageState extends State<SignupPage> {
                   SizedBox(height: 20.0),
                   TextField(
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: 'Confirm Email',
                       labelStyle: TextStyle(
                         fontFamily: 'Montserrat',
                         fontWeight: FontWeight.bold,
@@ -74,23 +66,35 @@ class _SignupPageState extends State<SignupPage> {
                           borderSide: BorderSide(color: Colors.lightGreen)),
                     ),
                   ),
-                  SizedBox(height: 5.0),
-                  Container(
-                    alignment: Alignment(1.0, 0.0),
-                    padding: EdgeInsets.only(top: 15.0, left: 20.0),
-                    child: InkWell(
-                      onTap: () {},
-                      child: Text(
-                        'Forgot Password',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.lightGreen,
-                          fontFamily: 'Montserrat',
-                          decoration: TextDecoration.underline,
-                        ),
+                  SizedBox(height: 20.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
                       ),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.lightGreen)),
                     ),
+                    obscureText: true,
                   ),
+                  SizedBox(height: 5.0),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Comfirm Password',
+                      labelStyle: TextStyle(
+                        fontFamily: 'Montserrat',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.lightGreen)),
+                    ),
+                    obscureText: true,
+                  ),
+                  SizedBox(height: 5.0),
                   SizedBox(height: 35.0),
                   Container(
                     height: 60.0,
@@ -100,10 +104,12 @@ class _SignupPageState extends State<SignupPage> {
                       color: Colors.green,
                       elevation: 7.0,
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).pushNamed('/login');
+                        },
                         child: Center(
                           child: Text(
-                            'Login',
+                            'Register',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -119,7 +125,9 @@ class _SignupPageState extends State<SignupPage> {
                       height: 60.0,
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).pushNamed('/login');
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -134,19 +142,8 @@ class _SignupPageState extends State<SignupPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Center(
-                                child: Image(
-                                  image: AssetImage('assets/BankId.png'),
-                                  color: null,
-                                  height: 40.0,
-                                  width: 40.0,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10.0,
-                              ),
-                              Center(
                                 child: Text(
-                                  'Log in with BankID',
+                                  'Go Back',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Monserrat',
@@ -161,29 +158,6 @@ class _SignupPageState extends State<SignupPage> {
               ),
             ),
             SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'New to Bankon?',
-                  style: TextStyle(
-                    fontFamily: 'Monserrat',
-                  ),
-                ),
-                SizedBox(width: 5.0),
-                InkWell(
-                    onTap: () {},
-                    child: Text(
-                      'Register',
-                      style: TextStyle(
-                        fontFamily: 'Monserrat',
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                        color: Colors.lightGreen,
-                      ),
-                    ))
-              ],
-            )
           ],
         ));
   }

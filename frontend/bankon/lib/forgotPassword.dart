@@ -1,31 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'forgotPassword.dart';
-import 'signup.dart';
-
-void main() => runApp(new BankonApp());
-
-class BankonApp extends StatelessWidget {
+class resetPass extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: <String, WidgetBuilder>{
-        '/signup': (BuildContext context) => new SignupPage(),
-        '/login': (BuildContext context) => MainLoginPage(),
-        '/resetPass': (BuildContext context) => new resetPass()
-      },
-      home: new MainLoginPage(),
-    );
-  }
+  _resetPassState createState() => _resetPassState();
 }
 
-class MainLoginPage extends StatefulWidget {
-  @override
-  _MainLoginPageState createState() => new _MainLoginPageState();
-}
-
-class _MainLoginPageState extends State<MainLoginPage> {
+class _resetPassState extends State<resetPass> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -39,21 +19,21 @@ class _MainLoginPageState extends State<MainLoginPage> {
                   Container(
                     padding: EdgeInsets.fromLTRB(30.0, 110.0, 0.0, 0.0),
                     child: Text(
-                      'Hello',
+                      'Reset',
                       style: TextStyle(
                           fontSize: 70.0, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(31.0, 175.0, 0.0, 0.0),
+                    padding: EdgeInsets.fromLTRB(30.0, 175.0, 0.0, 0.0),
                     child: Text(
-                      'There',
+                      'Password',
                       style: TextStyle(
                           fontSize: 70.0, fontWeight: FontWeight.bold),
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.fromLTRB(220.0, 175.0, 0.0, 0.0),
+                    padding: EdgeInsets.fromLTRB(340.0, 175.0, 0.0, 0.0),
                     child: Text(
                       '.',
                       style: TextStyle(
@@ -71,7 +51,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
                 children: <Widget>[
                   TextField(
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: 'Account Email',
                       labelStyle: TextStyle(
                         fontFamily: 'Montserrat',
                         fontWeight: FontWeight.bold,
@@ -80,40 +60,8 @@ class _MainLoginPageState extends State<MainLoginPage> {
                       focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.lightGreen)),
                     ),
-                  ),
-                  SizedBox(height: 20.0),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      labelStyle: TextStyle(
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.lightGreen)),
-                    ),
-                    obscureText: true,
                   ),
                   SizedBox(height: 5.0),
-                  Container(
-                    alignment: Alignment(1.0, 0.0),
-                    padding: EdgeInsets.only(top: 15.0, left: 20.0),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).pushNamed('/resetPass');
-                      },
-                      child: Text(
-                        'Forgot Password',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.lightGreen,
-                          fontFamily: 'Montserrat',
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
                   SizedBox(height: 35.0),
                   Container(
                     height: 60.0,
@@ -123,10 +71,12 @@ class _MainLoginPageState extends State<MainLoginPage> {
                       color: Colors.green,
                       elevation: 7.0,
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).pushNamed('/login');
+                        },
                         child: Center(
                           child: Text(
-                            'Login',
+                            'Reset Password',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -142,7 +92,9 @@ class _MainLoginPageState extends State<MainLoginPage> {
                       height: 60.0,
                       color: Colors.transparent,
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).pushNamed('/login');
+                        },
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -157,19 +109,8 @@ class _MainLoginPageState extends State<MainLoginPage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Center(
-                                child: Image(
-                                  image: AssetImage('assets/BankId.png'),
-                                  color: null,
-                                  height: 40.0,
-                                  width: 40.0,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10.0,
-                              ),
-                              Center(
                                 child: Text(
-                                  'Log in with BankID',
+                                  'Go Back',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Monserrat',
@@ -184,31 +125,6 @@ class _MainLoginPageState extends State<MainLoginPage> {
               ),
             ),
             SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'New to Bankon?',
-                  style: TextStyle(
-                    fontFamily: 'Monserrat',
-                  ),
-                ),
-                SizedBox(width: 5.0),
-                InkWell(
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/signup');
-                    },
-                    child: Text(
-                      'Register',
-                      style: TextStyle(
-                        fontFamily: 'Monserrat',
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
-                        color: Colors.lightGreen,
-                      ),
-                    ))
-              ],
-            )
           ],
         ));
   }
