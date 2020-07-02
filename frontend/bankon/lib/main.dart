@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'forgotPassword.dart';
 import 'signup.dart';
+import 'menuDashbordLayout.dart';
 
 void main() => runApp(new BankonApp());
 
@@ -13,7 +14,8 @@ class BankonApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/signup': (BuildContext context) => new SignupPage(),
         '/login': (BuildContext context) => MainLoginPage(),
-        '/resetPass': (BuildContext context) => new resetPass()
+        '/resetPass': (BuildContext context) => new resetPass(),
+        '/menu': (BuildContext context) => new MenuDashbord(),
       },
       home: new MainLoginPage(),
     );
@@ -123,7 +125,9 @@ class _MainLoginPageState extends State<MainLoginPage> {
                       color: Colors.green,
                       elevation: 7.0,
                       child: GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).pushNamed('/menu');
+                        },
                         child: Center(
                           child: Text(
                             'Login',
