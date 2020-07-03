@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'forgotPassword.dart';
 import 'signup.dart';
 import 'menuDashbordLayout.dart';
+import 'bankList.dart';
 
 void main() => runApp(new BankonApp());
 
@@ -13,9 +14,10 @@ class BankonApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
         '/signup': (BuildContext context) => new SignupPage(),
-        '/login': (BuildContext context) => MainLoginPage(),
+        '/login': (BuildContext context) => new MainLoginPage(),
         '/resetPass': (BuildContext context) => new resetPass(),
         '/menu': (BuildContext context) => new MenuDashbord(),
+        '/bankSelect': (BuildContext context) => new bankList(),
       },
       home: new MainLoginPage(),
     );
