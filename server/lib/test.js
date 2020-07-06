@@ -1,9 +1,4 @@
-import swedbank from './swedbank.js'
+import moment from 'moment'
 
-
-import axios from 'axios';
-axios.get(swedbank.auth.redirect.url).catch(e => {
-    console.log(e)
-}).then(res => {
-    console.log(res)
-})
+const DateFormat = "ddd, DD MMM YYYY HH:mm:ssz"
+console.log(moment().format(DateFormat) + 'GMT')

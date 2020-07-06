@@ -32,6 +32,11 @@ app.get('/auth', bankquery, async (req, res) => {
   res.redirect(`/accounts?bank=${req.bank.name}&token=${response.access_token}`)
 })
 
+app.post('/token', bankquery, async (req, res) => {
+  let response = await req.bank.auth.redirect.parse(req)
+  res.json({token: response.access_token})
+})
+
 app.get('/accounts', bankquery, async (req, res) => {
   let accounts = await req.bank.accounts.get(req)
   res.json(accounts)

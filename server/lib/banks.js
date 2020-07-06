@@ -1,7 +1,11 @@
 import seb from './seb.js'
 import nordea from './nordea.js'
+import handelsbanken from './handelsbanken.js'
+import swedbank from './swedbank.js'
 
 export default {
-    'seb': seb,
-    'nordea': nordea
+    seb,
+    nordea,
+    handelsbanken,
+    swedbank,
 }
