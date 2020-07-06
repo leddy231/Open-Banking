@@ -1,3 +1,4 @@
+import 'package:bankon/settings.dart';
 import 'package:flutter/material.dart';
 
 import 'forgotPassword.dart';
@@ -18,6 +19,7 @@ class BankonApp extends StatelessWidget {
         '/resetPass': (BuildContext context) => new resetPass(),
         '/menu': (BuildContext context) => new MenuDashbord(),
         '/bankSelect': (BuildContext context) => new bankList(),
+        '/settings': (BuildContext context) => new settings(),
       },
       home: new MainLoginPage(),
     );
@@ -126,7 +128,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
                       shadowColor: Colors.greenAccent,
                       color: Colors.green,
                       elevation: 7.0,
-                      child: GestureDetector(
+                      child: InkWell(
                         onTap: () {
                           Navigator.of(context).pushNamed('/menu');
                         },

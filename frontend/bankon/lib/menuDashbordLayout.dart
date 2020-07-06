@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-final Color backgroundColor = Color(0xFF4A4A58);
+final Color backgroundColor = Colors.white;
+int bankDataLength;
 
 class MenuDashbord extends StatefulWidget {
+  //Todo: Add bank retrieve data and uppdate bankdata.length so list matches. Before the page is loaded
+
   @override
   _MenuDashbordState createState() => _MenuDashbordState();
 }
@@ -62,37 +65,55 @@ class _MenuDashbordState extends State<MenuDashbord>
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    "Dashbord",
-                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/menu');
+                    },
+                    child: Text(
+                      //Todo: fix this
+                      "My Banks",
+                      style: TextStyle(color: Colors.grey, fontSize: 22),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    "Messages",
-                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text(
+                      "Messages",
+                      style: TextStyle(color: Colors.grey, fontSize: 22),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    "Utility",
-                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text(
+                      "Utility",
+                      style: TextStyle(color: Colors.grey, fontSize: 22),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    "Funds Transfer",
-                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text(
+                      "Funds Transfer",
+                      style: TextStyle(color: Colors.grey, fontSize: 22),
+                    ),
                   ),
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    "Branches",
-                    style: TextStyle(color: Colors.white, fontSize: 22),
+                  GestureDetector(
+                    onTap: () {},
+                    child: Text(
+                      "Branches",
+                      style: TextStyle(color: Colors.grey, fontSize: 22),
+                    ),
                   ),
                 ],
               )),
@@ -110,83 +131,114 @@ class _MenuDashbordState extends State<MenuDashbord>
       right: isCollapsed ? 0 : -0.4 * screenWidth,
       child: ScaleTransition(
         scale: _scaleAnimation,
-        child: Material(
-          animationDuration: duration,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          elevation: 8.0,
-          color: backgroundColor,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            physics: ClampingScrollPhysics(),
-            child: Container(
-              padding:
-                  const EdgeInsets.only(left: 16.0, right: 16.0, top: 48.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        InkWell(
-                          child: Icon(
-                            Icons.menu,
-                            color: Colors.white,
+        child: GestureDetector(
+          onPanUpdate: (details) {
+            if (details.delta.dx < 0) {
+              isCollapsed = true;
+            } else {
+              isCollapsed = false;
+            }
+            setState(() {
+              if (isCollapsed) {
+                _controller.reverse();
+              } else {
+                _controller.forward();
+              }
+            });
+          },
+          child: Material(
+            animationDuration: duration,
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            elevation: 8.0,
+            color: Colors.white,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              physics: ClampingScrollPhysics(),
+              child: Container(
+                padding:
+                    const EdgeInsets.only(left: 16.0, right: 16.0, top: 48.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Flexible(
+                            fit: FlexFit.tight,
+                            flex: 1,
+                            child: InkWell(
+                              child: Icon(
+                                Icons.menu,
+                                color: Colors.grey,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  if (isCollapsed) {
+                                    _controller.forward();
+                                  } else {
+                                    _controller.reverse();
+                                  }
+                                  isCollapsed = !isCollapsed;
+                                });
+                              },
+                            ),
                           ),
+                          Flexible(
+                            fit: FlexFit.tight,
+                            flex: 1,
+                            child: Text("My Banks",
+                                style: TextStyle(
+                                    fontSize: 24, color: Colors.black54)),
+                          ),
+                          Flexible(
+                            fit: FlexFit.tight,
+                            flex: 1,
+                            child: SizedBox(),
+                          )
+
+                        ]),
+                    SizedBox(height: 15),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: bankDataLength ?? 1,
+                      itemBuilder: (context, index) {
+                        //Todo: add so that it can print data and redirrect from firestore
+                        //Here is all the banks that we added with bank info. Picture and associated route to their own pages
+                        return Container();
+                      },
+                      //Todo: add so that it can print data and redirrect from firestore
+                      //add same here as for itemBuilder
+                      separatorBuilder: (context, index) {
+                        return Divider();
+                      },
+                    ),
+                    Container(
+                      height: 40.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(30.0),
+                        shadowColor: Colors.greenAccent,
+                        color: Colors.green,
+                        elevation: 7.0,
+                        child: GestureDetector(
                           onTap: () {
-                            setState(() {
-                              if (isCollapsed) {
-                                _controller.forward();
-                              } else {
-                                _controller.reverse();
-                              }
-                              isCollapsed = !isCollapsed;
-                            });
+                            Navigator.of(context).pushNamed('/bankSelect');
                           },
-                        ),
-                        Text("My Banks",
-                            style:
-                                TextStyle(fontSize: 24, color: Colors.white)),
-                        Icon(Icons.settings, color: Colors.white),
-                      ]),
-                  SizedBox(height: 15),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: 10, //Change to bankDataList.length
-                    itemBuilder: (context, index) {
-                      //Here is all the banks that we added with bank info. Picture and associated route to their own pages
-                      return Container();
-                    },
-                    //add same here as for itemBuilder
-                    separatorBuilder: (context, index) {
-                      return Divider();
-                    },
-                  ),
-                  Container(
-                    height: 40.0,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(30.0),
-                      shadowColor: Colors.greenAccent,
-                      color: Colors.green,
-                      elevation: 7.0,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pushNamed('/bankSelect');
-                        },
-                        child: Center(
-                          child: Text(
-                            'Add Bank',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Montserrat',
+                          child: Center(
+                            child: Text(
+                              'Add Bank',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Montserrat',
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
           ),
