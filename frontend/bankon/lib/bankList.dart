@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
+import 'backend/Backend.dart';
 
 //Contains list of all the bank you can select.
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 final Color backgroundColor = Colors.white;
+List avaibleBanks;
+List<ListBankItem> outputData;
 
 class bankList extends StatefulWidget {
   //Todo: Add bank retrieve data and uppdate bankdata.length so list matches. Before the page is loaded
+  getAvaibleBanks() async {
+    var banks = await Backend.getBanks();
+    avaibleBanks = banks;
+  }
+
+  generateListBankItem() {
+    if (avaibleBanks.length != null) {
+      outputData = List<ListBankItem>.generate(avaibleBanks.length,
+          (index) => new bankItem(avaibleBanks[index], "humbug", null));
+    }
+  }
 
   @override
   _bankListState createState() => _bankListState();
@@ -134,9 +148,9 @@ class _bankListState extends State<bankList>
         scale: _scaleAnimation,
         child: GestureDetector(
           onPanUpdate: (details) {
-            if (details.delta.dx < 0) {
+            if (details.delta.dx < -5) {
               isCollapsed = true;
-            } else {
+            } else if (details.delta.dx > 5) {
               isCollapsed = false;
             }
             setState(() {
@@ -165,31 +179,41 @@ class _bankListState extends State<bankList>
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         mainAxisSize: MainAxisSize.max,
                         children: [
-                          InkWell(
-                            child: Icon(
-                              Icons.menu,
-                              color: Colors.grey,
+                          Flexible(
+                            fit: FlexFit.tight,
+                            flex: 1,
+                            child: InkWell(
+                              child: Icon(
+                                Icons.menu,
+                                color: Colors.grey,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  if (isCollapsed) {
+                                    _controller.forward();
+                                  } else {
+                                    _controller.reverse();
+                                  }
+                                  isCollapsed = !isCollapsed;
+                                });
+                              },
                             ),
-                            onTap: () {
-                              setState(() {
-                                if (isCollapsed) {
-                                  _controller.forward();
-                                } else {
-                                  _controller.reverse();
-                                }
-                                isCollapsed = !isCollapsed;
-                              });
-                            },
                           ),
-                          Text("Select Bank",
-                              style: TextStyle(
-                                  fontSize: 24, color: Colors.black54)),
-                          SizedBox(width: 0,),
+                          Flexible(
+                            fit: FlexFit.tight,
+                            flex: 10,
+                            child: Text("Select Bank",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 24, color: Colors.black54)),
+                          ),
+                          Flexible(
+                              fit: FlexFit.tight, flex: 1, child: SizedBox()),
                         ]),
                     SizedBox(height: 15),
                     ListView.separated(
                       shrinkWrap: true,
-                      itemCount: 1,
+                      itemCount: 3,
                       itemBuilder: (context, index) {
                         //Todo: add so that it can print data and redirrect from firestore
                         //Here is all the banks that we added with bank info. Picture and associated route to their own pages
@@ -209,5 +233,40 @@ class _bankListState extends State<bankList>
         ),
       ),
     );
+  }
+}
+
+abstract class ListBankItem {
+  Widget buildBankItem(BuildContext context);
+}
+
+class bankItem implements ListBankItem {
+  final String name;
+  final String route;
+  final Image picture;
+
+  bankItem(this.name, this.route, this.picture);
+
+  Widget buildBankItem(BuildContext context) {
+    return Container(
+        child: InkWell(
+      onTap: () {
+        Navigator.of(context).pushNamed(route);
+      },
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          picture,
+          SizedBox(width: 10),
+          Text(
+            name,
+            style: TextStyle(color: Colors.black54, fontSize: 24),
+            textAlign: TextAlign.left,
+          ),
+        ],
+      ),
+    ));
   }
 }

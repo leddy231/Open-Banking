@@ -133,9 +133,9 @@ class _MenuDashbordState extends State<MenuDashbord>
         scale: _scaleAnimation,
         child: GestureDetector(
           onPanUpdate: (details) {
-            if (details.delta.dx < 0) {
+            if (details.delta.dx < -5) {
               isCollapsed = true;
-            } else {
+            } else if (details.delta.dx >5) {
               isCollapsed = false;
             }
             setState(() {
@@ -186,8 +186,9 @@ class _MenuDashbordState extends State<MenuDashbord>
                           ),
                           Flexible(
                             fit: FlexFit.tight,
-                            flex: 1,
+                            flex: 10,
                             child: Text("My Banks",
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 24, color: Colors.black54)),
                           ),
