@@ -1,4 +1,4 @@
-import 'package:bankon/settings.dart';
+import 'file:///R:/OpenBankingProjekt/frontend/bankon/lib/Frontend/settings.dart';
 import 'package:flutter/material.dart';
 
 import 'forgotPassword.dart';
