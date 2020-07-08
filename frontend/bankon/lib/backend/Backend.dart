@@ -5,6 +5,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Backend {
+  static Future<List<Bank>> getBanks() async {
+      var snapshot = await Firestore.instance.collection('banks').getDocuments();
+      final List<Bank> ret = [];
+      for (var doc in snapshot.documents) {
+        ret.add(Bank(doc.data['name'], doc.data['icon'], doc.data['redirecturl']));
+      }
+      return ret;
+  }
+  /*
     static const baseurl = "bankon.leddy231.se";
 
     static Future<List<Bank>> getBanks() async {
@@ -41,4 +50,5 @@ class Backend {
             throw Exception('Failed to get url');
         }
     }
+    */
 }

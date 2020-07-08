@@ -1,6 +1,8 @@
 class Bank {
     final String name;
-    Bank(this.name);
+    final String redirecturl;
+    final String iconurl;
+    Bank(this.name, this.iconurl, this.redirecturl);
     String toString() => 'Bank<$name>';
 }
 
@@ -31,7 +33,7 @@ class Account {
 
     static Account fromJson(Map<String, dynamic> data) {
         try {
-            var bank = Bank(data['bank']);
+            var bank = Bank(data['bank'], '', '');
             var numbers = data['account_numbers'].map((nr) {
                var type;
                if (nr['type'] == 'IBAN') {
