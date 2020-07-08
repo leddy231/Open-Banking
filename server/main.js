@@ -1,6 +1,6 @@
 import path from 'path'
 import express from 'express'
-import banks from './lib/banks.js'
+import banks from './lib/banks/banks.js'
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));

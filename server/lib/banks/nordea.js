@@ -1,4 +1,4 @@
-import  {cnst, map, filter} from  './wrangler.js';
+import  {cnst, map, filter} from  '../wrangler.js';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import qs from 'querystring'

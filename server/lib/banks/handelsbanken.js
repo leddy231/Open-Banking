@@ -1,4 +1,4 @@
-import { cnst, wrangle } from  './wrangler.js';
+import { cnst, wrangle } from  '../wrangler.js';
 import { v4 as uuid } from 'uuid';
 import qs from 'querystring'
 
