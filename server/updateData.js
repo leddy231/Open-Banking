@@ -15,7 +15,7 @@ async function updateData() {
         const bank = bankList[index];
         const iconurl = await getDownloadUrl(bank.name + '.png');
         const redirecturl = bank.auth.redirect.url
-        db.collection('banks').doc(bank.name).set({namn: bank.name, icon: iconurl, redirecturl: redirecturl});
+        db.collection('banks').doc(bank.name).set({name: bank.name, icon: iconurl, redirecturl: redirecturl});
     }
 }
 
