@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1088214492222",
+    "firebase_url": "https://bankon-1337.firebaseio.com",
+    "project_id": "bankon-1337",
+    "storage_bucket": "bankon-1337.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1088214492222:android:18c83582e6d720bc0b5d6f",
+        "android_client_info": {
+          "package_name": "com.example.bankon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1088214492222-7cht3fg96n7ut1imbj1br8gfafg9f4v4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4O9DOwWFhPWjWEG2VwgIXAS0qNxCMU0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1088214492222-7cht3fg96n7ut1imbj1br8gfafg9f4v4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

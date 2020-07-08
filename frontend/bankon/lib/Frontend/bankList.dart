@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../backend/Backend.dart';
+import '../backend/Account.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 //Contains list of all the bank you can select.
 import 'package:flutter/cupertino.dart';
@@ -15,27 +17,14 @@ class bankList extends StatefulWidget {
 }
 
 generateListBankItem() async {
-  print("Started to load banks");
-  final List banks = await Backend.getBanks();
-  print("Banks loaded");
-  print(banks);
-  print(await Backend.getBankIcon(banks[0]));
-  final List icons = new List<dynamic>();
-  final List uri = new List<dynamic>();
-  for (var i = 0; i < banks.length; i++) {
-    print(await Backend.getBankIcon(banks[i]));
-    uri.add(await Backend.getRedirectUrl(banks[i]));
-  }
-  print("icons and uri loaded");
-  print(List<ListBankItem>.generate(banks.length,
-          (index) => new bankItem(banks[index], uri[index], icons[index])));
-
+  final List<Bank> banks = await Backend.getBanks();
+  return List<ListBankItem>.generate(
+      banks.length, (index) => BankItem(banks[index]));
 }
 
 class _bankListState extends State<bankList>
     with SingleTickerProviderStateMixin {
-    static final banks = generateListBankItem();
-
+  final banks = generateListBankItem();
 
   bool isCollapsed = true;
   double screenWidth, screenHeigh;
@@ -61,7 +50,6 @@ class _bankListState extends State<bankList>
     _controller.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -231,11 +219,10 @@ class _bankListState extends State<bankList>
                               itemBuilder: (context, index) {
                                 final item = snapshot.data[index];
 
-                                //Todo: add so that it can print data and redirrect from firestore
                                 //Here is all the banks that we added with bank info. Picture and associated route to their own pages
                                 return item.buildBankItem(context);
                               },
-                              //Todo: add so that it can print data and redirrect from firestore
+
                               //add same here as for itemBuilder
                               separatorBuilder: (context, index) {
                                 return Divider();
@@ -243,9 +230,7 @@ class _bankListState extends State<bankList>
                             );
                           } else {
                             return Container(
-                              child: Text(
-                                "loading"
-                              ),
+                              child: Text("loading"),
                             );
                           }
                         },
@@ -264,28 +249,35 @@ abstract class ListBankItem {
   Widget buildBankItem(BuildContext context);
 }
 
-class bankItem implements ListBankItem {
-  final String name;
-  final String route;
-  final Image picture;
+class BankItem implements ListBankItem {
+  final Bank bankData;
 
-  bankItem(this.name, this.route, this.picture);
+  BankItem(this.bankData);
 
+  @override
   Widget buildBankItem(BuildContext context) {
     return Container(
         child: InkWell(
       onTap: () {
-        Navigator.of(context).pushNamed(route);
+        launch(bankData.redirecturl);
       },
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          picture,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Image.network(
+              bankData.iconurl,
+              alignment: Alignment.center,
+              width: 55,
+              height: 55,
+            ),
+          ),
           SizedBox(width: 10),
           Text(
-            name,
+            bankData.name,
             style: TextStyle(color: Colors.black54, fontSize: 24),
             textAlign: TextAlign.left,
           ),
@@ -293,4 +285,8 @@ class bankItem implements ListBankItem {
       ),
     ));
   }
+}
+
+extension CapExtension on String {
+  String get inCaps => '${this[0].toUpperCase()}${this.substring(1)}';
 }
