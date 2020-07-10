@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.example.bankon",
+            "sha256_cert_fingerprints": [
+                "AD:6E:B1:F8:48:C2:53:0D:56:71:CF:61:A3:58:07:50:E7:31:B4:C5:28:2B:69:61:DD:98:71:2E:AE:56:F8:D2"
+            ]
+        }
+    }
+]

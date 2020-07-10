@@ -9,6 +9,10 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(process.cwd() + '/sites/login.html'));
 });
 
+app.get('/.well-known/assetlinks.json', (req, res) => {
+  res.sendFile(path.join(path.resolve() + '/assetlinks.json'));
+})
+
 app.get('/banks', async (req, res) => {
   res.json(Object.keys(banks));
 })
