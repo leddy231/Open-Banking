@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'forgotPassword.dart';
 import 'signup.dart';
 import 'menuDashbordLayout.dart';
-import 'bankList.dart';
+import 'BankSelectionPage.dart';
+import 'BankDataPage.dart';
 
 void main() => runApp(new BankonApp());
 
@@ -20,6 +21,7 @@ class BankonApp extends StatelessWidget {
         '/menu': (BuildContext context) => new MenuDashbord(),
         '/bankSelect': (BuildContext context) => new bankList(),
         '/settings': (BuildContext context) => new settings(),
+        '/BankDataPage' : (BuildContext context) => new BankData(),
       },
       home: new MainLoginPage(),
     );

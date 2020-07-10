@@ -70,7 +70,6 @@ class _MenuDashbordState extends State<MenuDashbord>
                       Navigator.of(context).pushNamed('/menu');
                     },
                     child: Text(
-                      //Todo: fix this
                       "My Banks",
                       style: TextStyle(color: Colors.grey, fontSize: 22),
                     ),
@@ -228,6 +227,32 @@ class _MenuDashbordState extends State<MenuDashbord>
                           child: Center(
                             child: Text(
                               'Add Bank',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Montserrat',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      height: 40.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(30.0),
+                        shadowColor: Colors.greenAccent,
+                        color: Colors.green,
+                        elevation: 7.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pushNamed('/BankDataPage');
+                          },
+                          child: Center(
+                            child: Text(
+                              'Temporary transfer to Bank/Account Page',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
