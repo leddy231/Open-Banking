@@ -1,6 +1,6 @@
 import './settings.dart';
 import 'package:flutter/material.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'forgotPassword.dart';
 import 'signup.dart';
 import 'menuDashbordLayout.dart';
@@ -9,10 +9,11 @@ import 'BankDataPage.dart';
 import '../backend/Auth.dart';
 
 void main() {
-    runApp(new BankonApp());
-    Auth.setupIntercept();
+  runApp(new BankonApp());
+  Auth.setupIntercept();
 }
 
+//Todo: Firebase loggin.
 class BankonApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class BankonApp extends StatelessWidget {
         '/menu': (BuildContext context) => new MenuDashbord(),
         '/bankSelect': (BuildContext context) => new bankList(),
         '/settings': (BuildContext context) => new settings(),
-        '/BankDataPage' : (BuildContext context) => new BankData(),
+        '/BankDataPage': (BuildContext context) => new BankData(),
       },
       home: new MainLoginPage(),
     );
@@ -38,6 +39,19 @@ class MainLoginPage extends StatefulWidget {
 }
 
 class _MainLoginPageState extends State<MainLoginPage> {
+  final _passwordTextController = TextEditingController();
+  final _emailTextController = TextEditingController();
+
+  bool loggedIn = false;
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    _passwordTextController.dispose();
+    _emailTextController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -81,7 +95,8 @@ class _MainLoginPageState extends State<MainLoginPage> {
               padding: EdgeInsets.only(top: 35, left: 35, right: 40),
               child: Column(
                 children: <Widget>[
-                  TextField(
+                  TextFormField(
+                    controller: _emailTextController,
                     decoration: InputDecoration(
                       labelText: 'Email',
                       labelStyle: TextStyle(
@@ -95,6 +110,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
                   ),
                   SizedBox(height: 20.0),
                   TextFormField(
+                    controller: _passwordTextController,
                     decoration: InputDecoration(
                       labelText: 'Password',
                       labelStyle: TextStyle(
@@ -136,7 +152,10 @@ class _MainLoginPageState extends State<MainLoginPage> {
                       elevation: 7.0,
                       child: InkWell(
                         onTap: () {
-                          Navigator.of(context).pushNamed('/menu');
+                          Auth.signIn("a@c.com", "b");
+                          if (loggedIn) {
+                            Navigator.of(context).pushNamed('/menu');
+                          }
                         },
                         child: Center(
                           child: Text(
@@ -222,7 +241,22 @@ class _MainLoginPageState extends State<MainLoginPage> {
                       ),
                     ))
               ],
-            )
+            ),
+            StreamBuilder<FirebaseUser>(
+              stream: FirebaseAuth.instance.onAuthStateChanged,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.active) {
+                  FirebaseUser user = snapshot.data;
+                  if (user == null) {
+
+                  }else{
+                    loggedIn = false;
+                    Text(user.toString());
+                  }
+                }
+                return Container();
+              },
+            ),
           ],
         ));
   }

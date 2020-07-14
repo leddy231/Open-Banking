@@ -34,7 +34,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
           Text("Hello"),
           RaisedButton(
                 child: Text('Login'),
-                onPressed: () => Auth.signIn("test@test.com", "testtest"),
+                onPressed: () => Auth.signIn("test@te.com", "testtest"),
             ),
             RaisedButton(
                 child: Text('Logout'),
