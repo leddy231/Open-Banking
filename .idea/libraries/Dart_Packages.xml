@@ -275,6 +275,13 @@
             </list>
           </value>
         </entry>
+        <entry key="uni_links">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/uni_links-0.4.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="url_launcher">
           <value>
             <list>
@@ -362,6 +369,7 @@
       <root url="file://$PROJECT_DIR$/../Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/term_glyph-1.1.0/lib" />
       <root url="file://$PROJECT_DIR$/../Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.15/lib" />
       <root url="file://$PROJECT_DIR$/../Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/typed_data-1.1.6/lib" />
+      <root url="file://$PROJECT_DIR$/../Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/uni_links-0.4.0/lib" />
       <root url="file://$PROJECT_DIR$/../Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-5.5.0/lib" />
       <root url="file://$PROJECT_DIR$/../Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_linux-0.0.1+1/lib" />
       <root url="file://$PROJECT_DIR$/../Flutter/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_macos-0.0.1+7/lib" />

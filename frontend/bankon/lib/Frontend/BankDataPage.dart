@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'Drawer.dart';
 
 final Color backgroundColor = Colors.white;
 int bankDataLength;
@@ -12,6 +13,8 @@ class BankData extends StatefulWidget {
 }
 
 class _BankDataState extends State<BankData> with TickerProviderStateMixin {
+  //Possible to add more tabs here such as "erbjudanden"
+
   final List<Tab> BankTabs = <Tab>[
     Tab(
       text: "Konton",
@@ -26,6 +29,7 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
       text: "Fakturor",
     )
   ];
+
   bool isCollapsed = true;
   double screenWidth, screenHeigh;
   final Duration duration = const Duration(milliseconds: 100);
@@ -53,8 +57,9 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
     _tabController.dispose();
     super.dispose();
   }
+
 //test
-  
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -62,130 +67,84 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
     screenWidth = size.width;
     return Scaffold(
         appBar: AppBar(
-          title: Text("/BankNAmeData"),
-          actions: <Widget>[Text("/BankNameData",textAlign: TextAlign.left,), Icon(Icons.iso)],
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: BankTabs,
+          backgroundColor: Colors.lightGreen,
+          flexibleSpace: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 40,
+                    ),
+                    Expanded(
+                      child: TabBar(
+                        indicatorWeight: 2,
+                        isScrollable: true,
+                        indicatorColor: Colors.white,
+                        controller: _tabController,
+                        tabs: BankTabs,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    //Todo: Fixa dropdown klart.
+                    DropdownButton(
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
           ),
         ),
+        drawer: GeneralDrawer(),
         backgroundColor: backgroundColor,
         body: Stack(
           children: <Widget>[
-            dashbordMenu(context),
             menu(context),
           ],
         ));
   }
 
-  Widget dashbordMenu(context) {
-    return SlideTransition(
-      position: _slideAnimation,
-      child: ScaleTransition(
-        scale: _menuScaleAnimation,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/menu');
-                    },
-                    child: Text(
-                      "My Banks",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Messages",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Utility",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Funds Transfer",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Branches",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                ],
-              )),
-        ),
-      ),
+  Widget menu(context) {
+    return TabBarView(
+      controller: _tabController,
+      //Todo: For children add methods that run each specific page.
+      children: <Widget>[
+        accounts(context),
+        savings(context),
+        loans(context),
+        invoice(context)
+      ],
     );
   }
 
-  Widget menu(context) {
-    return AnimatedPositioned(
-      duration: duration,
-      top: 0,
-      bottom: 0,
-      left: isCollapsed ? 0 : 0.6 * screenWidth,
-      right: isCollapsed ? 0 : -0.4 * screenWidth,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: GestureDetector(
-          onPanUpdate: (details) {
-            if (details.delta.dx < -5) {
-              isCollapsed = true;
-            } else if (details.delta.dx > 5) {
-              isCollapsed = false;
-            }
-            setState(() {
-              if (isCollapsed) {
-                _controller.reverse();
-              } else {
-                _controller.forward();
-              }
-            });
-          },
-          child: TabBarView(
-            controller: _tabController,
-            children: BankTabs.map((Tab tab) {
-              final String label = tab.text;
-              return Center(
-                child: Text(
-                  'This is the $label tab',
-                  style: const TextStyle(fontSize: 36),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-      ),
+  Widget accounts(context) {
+    return Container(
+      child: Text("test"),
+    );
+  }
+
+  Widget savings(context) {
+    return Container(
+      child: Text("test2"),
+    );
+  }
+
+  Widget loans(context) {
+    return Container(
+      child: Text("test3"),
+    );
+  }
+
+  Widget invoice(context) {
+    return Container(
+      child: Text("test4"),
     );
   }
 }
