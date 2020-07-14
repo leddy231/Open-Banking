@@ -6,8 +6,12 @@ import 'signup.dart';
 import 'menuDashbordLayout.dart';
 import 'BankSelectionPage.dart';
 import 'BankDataPage.dart';
+import '../backend/Auth.dart';
 
-void main() => runApp(new BankonApp());
+void main() {
+    runApp(new BankonApp());
+    Auth.setupIntercept();
+}
 
 class BankonApp extends StatelessWidget {
   @override
