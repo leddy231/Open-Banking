@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import '../backend/Auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-void main() => runApp(new BankonApp());
+void main() {
+    runApp(new BankonApp());
+}
+//adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://bankon.leddy231.se/test"'
 
 class BankonApp extends StatelessWidget {
   @override
