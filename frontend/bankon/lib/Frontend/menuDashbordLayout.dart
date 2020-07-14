@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../backend/Auth.dart';
+
 
 final Color backgroundColor = Colors.white;
 int bankDataLength;
@@ -108,9 +111,11 @@ class _MenuDashbordState extends State<MenuDashbord>
                     height: 10,
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      Auth.signOut();
+                    },
                     child: Text(
-                      "Branches",
+                      "loggout",
                       style: TextStyle(color: Colors.grey, fontSize: 22),
                     ),
                   ),
