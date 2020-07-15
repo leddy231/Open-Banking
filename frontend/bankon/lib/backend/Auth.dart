@@ -80,7 +80,7 @@ class Auth {
   ///   • `ERROR_TOO_MANY_REQUESTS` - If there was too many attempts to sign in as this user.
   ///   • `ERROR_OPERATION_NOT_ALLOWED` - Indicates that Email & Password accounts are not enabled.
   static Future<LoginStatus> signIn(String email, String password) async {
-    if(email == null || password == null) {
+    if(email == null || password == null || email == '' || password == '') {
       return LoginStatus.invalidInput;
     }
     try {
@@ -88,7 +88,7 @@ class Auth {
           email: email, password: password);
       user = authResult.user;
     } catch (e) {
-      switch (e) {
+      switch (e.code) {
         case 'ERROR_INVALID_EMAIL':
           return LoginStatus.invalidEmail;
         case 'ERROR_WRONG_PASSWORD':
