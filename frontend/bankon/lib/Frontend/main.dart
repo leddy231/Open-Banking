@@ -10,7 +10,7 @@ import '../backend/Auth.dart';
 
 void main() {
   runApp(new BankonApp());
-  Auth.setupIntercept();
+  Auth.setup();
 }
 
 //Todo: Firebase loggin.
