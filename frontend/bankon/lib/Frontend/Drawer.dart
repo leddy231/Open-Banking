@@ -6,10 +6,10 @@ class GeneralDrawer extends StatelessWidget {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
-        children: const <Widget>[
+        children: <Widget>[
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: Colors.greenAccent,
             ),
             child: Text(
               'Drawer Header',
@@ -19,18 +19,27 @@ class GeneralDrawer extends StatelessWidget {
               ),
             ),
           ),
-          ListTile(
-            leading: Icon(Icons.message),
-            title: Text('Messages'),
+          InkWell(
+            onTap: () {},
+            child: ListTile(
+              leading: Icon(Icons.message),
+              title: Text('Messages'),
+            ),
           ),
-          ListTile(
-            leading: Icon(Icons.account_circle),
-            title: Text('Profile'),
+          InkWell(
+            onTap: () {},
+            child: ListTile(
+              leading: Icon(Icons.account_circle),
+              title: Text('Profile'),
+            ),
           ),
-          ListTile(
-            leading: Icon(Icons.settings),
-            title: Text('Settings'),
-          ),
+          InkWell(
+            onTap: () {},
+            child: ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('Settings'),
+            ),
+          )
         ],
       ),
     );

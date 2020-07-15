@@ -12,8 +12,14 @@ class BankData extends StatefulWidget {
   _BankDataState createState() => _BankDataState();
 }
 
+generateListAccountItem() async {
+  final List<Accounts> banks = await Auth.Accounts.getBanks();
+  return List<ListAccountItem>.generate(
+      banks.length, (index) => AccountItem(Account[index]));
+}
+
 class _BankDataState extends State<BankData> with TickerProviderStateMixin {
-  //Possible to add more tabs here such as "erbjudanden"
+  final Accounts = generateListAccountItem();
 
   final List<Tab> BankTabs = <Tab>[
     Tab(
@@ -62,7 +68,9 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    Size size = MediaQuery
+        .of(context)
+        .size;
     screenHeigh = size.height;
     screenWidth = size.width;
     return Scaffold(
@@ -126,7 +134,32 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
 
   Widget accounts(context) {
     return Container(
-      child: Text("test"),
+      child: FutureBuilder(
+        future: Accounts,
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          if (snapshot.hasData) {
+            return ListView.separated(
+              shrinkWrap: true,
+              itemCount: snapshot.data.length ?? 1,
+              itemBuilder: (context, index) {
+                final item = snapshot.data[index];
+
+                //Here is all the banks that we added with bank info. Picture and associated route to their own pages
+                return item.buildBankItem(context);
+              },
+
+              //add same here as for itemBuilder
+              separatorBuilder: (context, index) {
+                return Divider();
+              },
+            );
+          } else {
+            return Container(
+              child: Text("loading"),
+            );
+          }
+        },
+      ),
     );
   }
 
@@ -145,6 +178,45 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
   Widget invoice(context) {
     return Container(
       child: Text("test4"),
+    );
+  }
+}
+
+abstract class ListAccountItem {
+  Widget buildAccountItem(BuildContext context);
+}
+
+class accountItem implements ListAccountItem {
+  final Account accountData;
+
+  accountItem(this.accountData);
+
+  @override
+  Widget buildAccountItem(BuildContext context) {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Image.network(
+              bankData.iconurl,
+              alignment: Alignment.center,
+              width: 55,
+              height: 55,
+            ),
+          ),
+          SizedBox(width: 10),
+          Text(
+            bankData.name,
+            style: TextStyle(color: Colors.black54, fontSize: 24),
+            textAlign: TextAlign.left,
+          ),
+        ],
+      ),
+    )
     );
   }
 }

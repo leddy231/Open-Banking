@@ -6,6 +6,7 @@ import './Account.dart';
 import 'dart:async';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+
 class Auth {
     static FirebaseUser user;
     static Stream<List<Account>> accounts;
@@ -37,27 +38,24 @@ class Auth {
         }
     }
 
-    static Future<String> signIn(String email, String password) async {
-        final AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
-        user = authResult.user;
-        if(_accountsubscription != null) {
-          _accountsubscription.cancel();
-        }
-        final accountstream = Firestore.instance.collection('users').document(user.uid).collection('accounts').snapshots();
-        _accountsubscription = accountstream.listen((snapshot) {
-          final accounts = snapshot.documents.map((doc) => Account.fromJson(doc.data));
-          _accountscontroller.add(accounts.toList());
-        });
-        print('Sign in succeeded: $user.email');
-        return 'Sign in succeeded: $user.email';
-    }
+  static Future<String> signIn(String email, String password) async {
+      final AuthResult authResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      user = authResult.user;
+      if(_accountsubscription != null) {
+        _accountsubscription.cancel();
+      }
+      final accountstream = Firestore.instance.collection('users').document(user.uid).collection('accounts').snapshots();
+      _accountsubscription = accountstream.listen((snapshot) {
+        final accounts = snapshot.documents.map((doc) => Account.fromJson(doc.data));
+        _accountscontroller.add(accounts.toList());
+      });
+      print('Sign in succeeded: $user.email');
+      return 'Sign in succeeded: $user.email';
+  }
 
-    static void signOut() async{
-        await _auth.signOut();
-        user = null;
-        print("User Sign Out");
-    }
+  static void signOut() async {
+    await _auth.signOut();
+    user = null;
+    print("User Sign Out");
+  }
 }
-
-
-

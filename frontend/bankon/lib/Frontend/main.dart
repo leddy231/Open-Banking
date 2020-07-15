@@ -42,6 +42,8 @@ class MainLoginPage extends StatefulWidget {
 class _MainLoginPageState extends State<MainLoginPage> {
   final _passwordTextController = TextEditingController();
   final _emailTextController = TextEditingController();
+  var logginStatus = "hej";
+  var logginStatusVisible = false;
 
   @override
   void dispose() {
@@ -157,7 +159,22 @@ class _MainLoginPageState extends State<MainLoginPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 35.0),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: 25,
+                child: Visibility(
+                  child: Text(
+                    logginStatus,
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontSize: 15,
+                    ),
+                  ),
+                  visible: logginStatusVisible,
+                ),
+              ),
               Container(
                 height: 60.0,
                 child: Material(
@@ -167,8 +184,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
                   elevation: 7.0,
                   child: InkWell(
                     onTap: () {
-                      Auth.signIn(_emailTextController.text,
-                          _passwordTextController.text);
+                      getAuthSignIn();
                     },
                     child: Center(
                       child: Text(
@@ -257,5 +273,14 @@ class _MainLoginPageState extends State<MainLoginPage> {
         ),
       ],
     );
+  }
+
+  getAuthSignIn() async {
+    final String signInString = await Auth.signIn(
+        _emailTextController.text, _passwordTextController.text);
+    setState(() {
+      logginStatus = signInString;
+      logginStatusVisible = true;
+    });
   }
 }
