@@ -276,10 +276,11 @@ class _MainLoginPageState extends State<MainLoginPage> {
   }
 
   getAuthSignIn() async {
-    final String signInString = await Auth.signIn(
+     LoginStatus recived = await Auth.signIn(
         _emailTextController.text, _passwordTextController.text);
+
     setState(() {
-      logginStatus = signInString;
+      logginStatus = recived.show();
       logginStatusVisible = true;
     });
   }

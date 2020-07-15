@@ -1,6 +1,8 @@
+import 'package:bankon/backend/Account.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'Drawer.dart';
+import '../backend/Auth.dart';
 
 final Color backgroundColor = Colors.white;
 int bankDataLength;
@@ -12,15 +14,7 @@ class BankData extends StatefulWidget {
   _BankDataState createState() => _BankDataState();
 }
 
-generateListAccountItem() async {
-  final List<Accounts> banks = await Auth.Accounts.getBanks();
-  return List<ListAccountItem>.generate(
-      banks.length, (index) => AccountItem(Account[index]));
-}
-
 class _BankDataState extends State<BankData> with TickerProviderStateMixin {
-  final Accounts = generateListAccountItem();
-
   final List<Tab> BankTabs = <Tab>[
     Tab(
       text: "Konton",
@@ -68,9 +62,7 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     screenHeigh = size.height;
     screenWidth = size.width;
     return Scaffold(
@@ -134,18 +126,19 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
 
   Widget accounts(context) {
     return Container(
-      child: FutureBuilder(
-        future: Accounts,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+      child: StreamBuilder(
+        stream: Auth.accounts,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
+         List<dynamic> accountList =  snapshot.data.map((account) => accountItem(account)).toList();
             return ListView.separated(
               shrinkWrap: true,
-              itemCount: snapshot.data.length ?? 1,
+              itemCount: accountList.length ?? 1,
               itemBuilder: (context, index) {
-                final item = snapshot.data[index];
+                final item = accountList[index];
 
                 //Here is all the banks that we added with bank info. Picture and associated route to their own pages
-                return item.buildBankItem(context);
+                return item.buildAccountItem(context);
               },
 
               //add same here as for itemBuilder
@@ -201,22 +194,15 @@ class accountItem implements ListAccountItem {
         children: <Widget>[
           ClipRRect(
             borderRadius: BorderRadius.circular(15),
-            child: Image.network(
-              bankData.iconurl,
-              alignment: Alignment.center,
-              width: 55,
-              height: 55,
-            ),
           ),
           SizedBox(width: 10),
           Text(
-            bankData.name,
-            style: TextStyle(color: Colors.black54, fontSize: 24),
+            accountData.id,
+            style: TextStyle(color: Colors.black54, fontSize: 10),
             textAlign: TextAlign.left,
           ),
         ],
       ),
-    )
     );
   }
 }
