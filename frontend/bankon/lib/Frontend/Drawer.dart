@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../backend/Auth.dart';
 
 class GeneralDrawer extends StatelessWidget {
   @override
@@ -12,7 +13,7 @@ class GeneralDrawer extends StatelessWidget {
               color: Colors.greenAccent,
             ),
             child: Text(
-              'Drawer Header',
+              'Test Testssons        Bankon Account',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
@@ -20,10 +21,12 @@ class GeneralDrawer extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushNamed('/menu');
+            },
             child: ListTile(
-              leading: Icon(Icons.message),
-              title: Text('Messages'),
+              leading: Icon(Icons.account_balance),
+              title: Text('My banks'),
             ),
           ),
           InkWell(
@@ -38,6 +41,16 @@ class GeneralDrawer extends StatelessWidget {
             child: ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              Auth.signOut();
+              Navigator.of(context).pushNamed('/startPage');
+            },
+            child: ListTile(
+              leading: Icon(Icons.power_settings_new),
+              title: Text('Logout'),
             ),
           )
         ],

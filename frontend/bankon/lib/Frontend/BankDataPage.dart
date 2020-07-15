@@ -125,6 +125,9 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
   }
 
   Widget accounts(context) {
+    setState(() {
+
+    });
     return Container(
       child: StreamBuilder(
         stream: Auth.accounts,
@@ -157,18 +160,27 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
   }
 
   Widget savings(context) {
+    setState(() {
+
+    });
     return Container(
       child: Text("test2"),
     );
   }
 
   Widget loans(context) {
+    setState(() {
+
+    });
     return Container(
       child: Text("test3"),
     );
   }
 
   Widget invoice(context) {
+    setState(() {
+
+    });
     return Container(
       child: Text("test4"),
     );
