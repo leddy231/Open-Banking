@@ -39,16 +39,25 @@ extension toS on LoginStatus {
 
 class Auth {
   static FirebaseUser user;
-  static Stream<List<Account>> accounts;
-  static StreamController<List<Account>> _accountscontroller;
-  static StreamSubscription<QuerySnapshot> _accountsubscription;
 
   static void setup() {
     Auth.signIn('test@test.com', 'testtest');
     getInitialUri().then((link) => Auth.interceptLink(link));
     getUriLinksStream().listen((link) => Auth.interceptLink(link));
-    _accountscontroller = StreamController();
-    accounts = _accountscontroller.stream.asBroadcastStream();
+  }
+
+  static Stream<List<Account>> accounts() {
+    if (user == null) {
+      return Stream.empty();
+    }
+    return Firestore.instance
+        .collection('users')
+        .document(user.uid)
+        .collection('accounts')
+        .snapshots()
+        .map((snapshot) => snapshot.documents
+            .map((doc) => Account.fromJson(doc.data))
+            .toList());
   }
 
   static void interceptLink(Uri link) async {
@@ -80,7 +89,7 @@ class Auth {
   ///   • `ERROR_TOO_MANY_REQUESTS` - If there was too many attempts to sign in as this user.
   ///   • `ERROR_OPERATION_NOT_ALLOWED` - Indicates that Email & Password accounts are not enabled.
   static Future<LoginStatus> signIn(String email, String password) async {
-    if(email == null || password == null || email == '' || password == '') {
+    if (email == null || password == null || email == '' || password == '') {
       return LoginStatus.invalidInput;
     }
     try {
@@ -101,20 +110,6 @@ class Auth {
           return LoginStatus.error;
       }
     }
-
-    if (_accountsubscription != null) {
-      _accountsubscription.cancel();
-    }
-    final accountstream = Firestore.instance
-        .collection('users')
-        .document(user.uid)
-        .collection('accounts')
-        .snapshots();
-    _accountsubscription = accountstream.listen((snapshot) {
-      final accounts =
-          snapshot.documents.map((doc) => Account.fromJson(doc.data));
-      _accountscontroller.add(accounts.toList());
-    });
     print('Sign in succeeded: $user.email');
     return LoginStatus.success;
   }
