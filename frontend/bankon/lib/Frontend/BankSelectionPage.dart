@@ -22,8 +22,7 @@ generateListBankItem() async {
       banks.length, (index) => BankItem(banks[index]));
 }
 
-class _bankListState extends State<bankList>
-    with SingleTickerProviderStateMixin {
+class _bankListState extends State<bankList> with SingleTickerProviderStateMixin {
   final banks = generateListBankItem();
 
   bool isCollapsed = true;
