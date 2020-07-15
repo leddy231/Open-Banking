@@ -130,7 +130,7 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
     });
     return Container(
       child: StreamBuilder(
-        stream: Auth.accounts,
+        stream: Auth.accounts(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
          List<dynamic> accountList =  snapshot.data.map((account) => accountItem(account)).toList();
