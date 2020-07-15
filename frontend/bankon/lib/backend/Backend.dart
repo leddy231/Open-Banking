@@ -6,13 +6,26 @@ import 'dart:convert';
 
 class Backend {
   static Future<List<Bank>> getBanks() async {
-      var snapshot = await Firestore.instance.collection('banks').getDocuments();
-      final List<Bank> ret = [];
-      for (var doc in snapshot.documents) {
-        ret.add(Bank(doc.data['name'], doc.data['icon'], doc.data['redirecturl']));
-      }
-      return ret;
+    var snapshot = await Firestore.instance.collection('banks').getDocuments();
+    final List<Bank> ret = [];
+    for (var doc in snapshot.documents) {
+      ret.add(
+          Bank(doc.data['name'], doc.data['icon'], doc.data['redirecturl']));
+    }
+    return ret;
   }
+
+  static Future<Map<String, dynamic>> post(String url, Map<String, String> query) async {
+    final uri = Uri.https('bankon.leddy231.se', url, query);
+    final response = await http.post(uri);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed post');
+    }
+  }
+}
   /*
     static const baseurl = "bankon.leddy231.se";
 
@@ -51,4 +64,3 @@ class Backend {
         }
     }
     */
-}
