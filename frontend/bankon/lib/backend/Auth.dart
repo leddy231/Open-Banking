@@ -48,7 +48,7 @@ class Auth {
     getInitialUri().then((link) => Auth.interceptLink(link));
     getUriLinksStream().listen((link) => Auth.interceptLink(link));
     _accountscontroller = StreamController();
-    accounts = _accountscontroller.stream;
+    accounts = _accountscontroller.stream.asBroadcastStream();
   }
 
   static void interceptLink(Uri link) async {
