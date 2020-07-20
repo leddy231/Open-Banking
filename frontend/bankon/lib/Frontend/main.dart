@@ -279,9 +279,12 @@ class _MainLoginPageState extends State<MainLoginPage> {
      LoginStatus recived = await Auth.signIn(
         _emailTextController.text, _passwordTextController.text);
 
+
     setState(() {
       logginStatus = recived.show();
       logginStatusVisible = true;
     });
   }
+
+
 }
