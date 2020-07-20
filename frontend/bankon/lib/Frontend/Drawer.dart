@@ -46,7 +46,9 @@ class GeneralDrawer extends StatelessWidget {
           InkWell(
             onTap: () {
               Auth.signOut();
-              Navigator.of(context).pushNamed('/startPage');
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/startPage', (Route<dynamic> route) => false);
+              Auth.signOut();
             },
             child: ListTile(
               leading: Icon(Icons.power_settings_new),
