@@ -58,6 +58,15 @@ class _bankListState extends State<bankList>
     screenHeigh = size.height;
     screenWidth = size.width;
     return Scaffold(
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(45),
+          child: AppBar(
+            title: Text("Select Bank"),
+            backgroundColor: Colors.lightGreen,
+
+
+          ),
+        ),
         drawer: GeneralDrawer(),
         backgroundColor: backgroundColor,
         body: Stack(children: <Widget>[
@@ -66,110 +75,44 @@ class _bankListState extends State<bankList>
   }
 
   Widget menu(context) {
-    return AnimatedPositioned(
-      duration: duration,
-      top: 0,
-      bottom: 0,
-      left: isCollapsed ? 0 : 0.6 * screenWidth,
-      right: isCollapsed ? 0 : -0.4 * screenWidth,
-      child: ScaleTransition(
-        scale: _scaleAnimation,
-        child: GestureDetector(
-          onPanUpdate: (details) {
-            if (details.delta.dx < -5) {
-              isCollapsed = true;
-            } else if (details.delta.dx > 5) {
-              isCollapsed = false;
-            }
-            setState(() {
-              if (isCollapsed) {
-                _controller.reverse();
-              } else {
-                _controller.forward();
-              }
-            });
-          },
-          child: Material(
-            animationDuration: duration,
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            elevation: 8.0,
-            color: Colors.white,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              physics: ClampingScrollPhysics(),
-              child: Container(
-                padding:
-                    const EdgeInsets.only(left: 16.0, right: 16.0, top: 48.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Flexible(
-                              fit: FlexFit.tight,
-                              flex: 1,
-                              child: InkWell(
-                                child: Icon(
-                                  Icons.menu,
-                                  color: Colors.grey,
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    if (isCollapsed) {
-                                      _controller.forward();
-                                    } else {
-                                      _controller.reverse();
-                                    }
-                                    isCollapsed = !isCollapsed;
-                                  });
-                                },
-                              ),
-                            ),
-                            Flexible(
-                              fit: FlexFit.tight,
-                              flex: 10,
-                              child: Text("Select Bank",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 24, color: Colors.black54)),
-                            ),
-                            Flexible(
-                                fit: FlexFit.tight, flex: 1, child: SizedBox()),
-                          ]),
-                      SizedBox(height: 15),
-                      FutureBuilder(
-                        future: banks,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<dynamic> snapshot) {
-                          if (snapshot.hasData) {
-                            return ListView.separated(
-                              shrinkWrap: true,
-                              itemCount: snapshot.data.length ?? 1,
-                              itemBuilder: (context, index) {
-                                final item = snapshot.data[index];
+    return Material(
+      color: Colors.white,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        physics: ClampingScrollPhysics(),
+        child: Container(
+          padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16),
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                FutureBuilder(
+                  future: banks,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        itemCount: snapshot.data.length ?? 1,
+                        itemBuilder: (context, index) {
+                          final item = snapshot.data[index];
 
-                                //Here is all the banks that we added with bank info. Picture and associated route to their own pages
-                                return item.buildBankItem(context);
-                              },
-
-                              //add same here as for itemBuilder
-                              separatorBuilder: (context, index) {
-                                return Divider();
-                              },
-                            );
-                          } else {
-                            return Container(
-                              child: Text("loading"),
-                            );
-                          }
+                          //Here is all the banks that we added with bank info. Picture and associated route to their own pages
+                          return item.buildBankItem(context);
                         },
-                      ),
-                    ]),
-              ),
-            ),
-          ),
+
+                        //add same here as for itemBuilder
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        },
+                      );
+                    } else {
+                      return Container(
+                        child: Text("loading"),
+                      );
+                    }
+                  },
+                ),
+              ]),
         ),
       ),
     );

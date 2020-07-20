@@ -66,40 +66,43 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
     screenHeigh = size.height;
     screenWidth = size.width;
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.lightGreen,
-          flexibleSpace: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 40,
-                    ),
-                    Expanded(
-                      child: TabBar(
-                        indicatorWeight: 2,
-                        isScrollable: true,
-                        indicatorColor: Colors.white,
-                        controller: _tabController,
-                        tabs: BankTabs,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(45),
+          child: AppBar(
+            backgroundColor: Colors.lightGreen,
+            flexibleSpace: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 40,
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    //Todo: Fixa dropdown klart.
-                    DropdownButton(
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: Colors.white,
+                      Expanded(
+                        child: TabBar(
+                          indicatorWeight: 2,
+                          isScrollable: true,
+                          indicatorColor: Colors.white,
+                          controller: _tabController,
+                          tabs: BankTabs,
+                        ),
                       ),
-                    )
-                  ],
-                ),
-              )
-            ],
+                      SizedBox(width: 10),
+                      //Todo: Fixa dropdown klart.
+                      DropdownButton(
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
         drawer: GeneralDrawer(),
