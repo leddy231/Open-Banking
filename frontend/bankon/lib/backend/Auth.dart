@@ -17,7 +17,16 @@ enum LoginStatus {
   error
 }
 
-extension toS on LoginStatus {
+enum RegisterStatus {
+  invalidInput,
+  invalidEmail,
+  weakPassword,
+  userExists,
+  success,
+  error
+}
+
+extension loginToString on LoginStatus {
   String show() {
     switch (this) {
       case LoginStatus.invalidInput:
@@ -37,11 +46,29 @@ extension toS on LoginStatus {
   }
 }
 
+extension registerToString on RegisterStatus {
+  String show() {
+    switch (this) {
+      case RegisterStatus.invalidInput:
+        return "Password and Email fields must be filled in";
+      case RegisterStatus.userExists:
+        return "This email is already in use";
+      case RegisterStatus.invalidEmail:
+        return "The email address is badly formatted.";
+      case RegisterStatus.weakPassword:
+        return "The password is too weak";
+      case RegisterStatus.success:
+        return "Register Successful";
+      default:
+        return "An error has occurred";
+    }
+  }
+}
+
 class Auth {
   static FirebaseUser user;
 
   static void setup() {
-    Auth.signIn('test@test.com', 'testtest');
     getInitialUri().then((link) => Auth.interceptLink(link));
     getUriLinksStream().listen((link) => Auth.interceptLink(link));
   }
@@ -112,6 +139,31 @@ class Auth {
     }
     print('Sign in succeeded: $user.email');
     return LoginStatus.success;
+  }
+
+  ///   • `ERROR_WEAK_PASSWORD` - If the password is not strong enough.
+  ///   • `ERROR_INVALID_EMAIL` - If the email address is malformed.
+  ///   • `ERROR_EMAIL_ALREADY_IN_USE` - If the email is already in use by a different account.
+  static Future<RegisterStatus> register(String email, String password) async {
+    if (email == null || password == null || email == '' || password == '') {
+      return RegisterStatus.invalidInput;
+    }
+    try {
+      final AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      user = authResult.user;
+    } catch (e) {
+      switch (e.code) {
+        case 'ERROR_WEAK_PASSWORD':
+          return RegisterStatus.weakPassword;
+        case 'ERROR_INVALID_EMAIL':
+          return RegisterStatus.invalidEmail;
+        case 'ERROR_EMAIL_ALREADY_IN_USE':
+          return RegisterStatus.userExists;
+        default:
+          return RegisterStatus.error;
+      }
+    }
+    return RegisterStatus.success;
   }
 
   static void signOut() async {
