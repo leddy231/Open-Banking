@@ -1,3 +1,4 @@
+import 'package:bankon/Frontend/Drawer.dart';
 import 'package:flutter/material.dart';
 import '../backend/Backend.dart';
 import '../backend/Account.dart';
@@ -22,7 +23,8 @@ generateListBankItem() async {
       banks.length, (index) => BankItem(banks[index]));
 }
 
-class _bankListState extends State<bankList> with SingleTickerProviderStateMixin {
+class _bankListState extends State<bankList>
+    with SingleTickerProviderStateMixin {
   final banks = generateListBankItem();
 
   bool isCollapsed = true;
@@ -56,81 +58,11 @@ class _bankListState extends State<bankList> with SingleTickerProviderStateMixin
     screenHeigh = size.height;
     screenWidth = size.width;
     return Scaffold(
+        drawer: GeneralDrawer(),
         backgroundColor: backgroundColor,
         body: Stack(children: <Widget>[
-          dashbordMenu(context),
           menu(context),
         ]));
-  }
-
-  Widget dashbordMenu(context) {
-    return SlideTransition(
-      position: _slideAnimation,
-      child: ScaleTransition(
-        scale: _menuScaleAnimation,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Align(
-              alignment: Alignment.centerLeft,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed('/menu');
-                    },
-                    child: Text(
-                      "My Banks",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Messages",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Utility",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Funds Transfer",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: Text(
-                      "Branches",
-                      style: TextStyle(color: Colors.grey, fontSize: 22),
-                    ),
-                  ),
-                ],
-              )),
-        ),
-      ),
-    );
   }
 
   Widget menu(context) {
