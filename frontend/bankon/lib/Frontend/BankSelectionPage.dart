@@ -74,6 +74,7 @@ class _bankListState extends State<bankList>
 
   Widget menu(context) {
     return Material(
+      borderRadius: BorderRadius.circular(50),
       color: Colors.white,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,

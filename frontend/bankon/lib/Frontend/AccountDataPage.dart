@@ -40,7 +40,7 @@ class _AccountDataState extends State<AccountDataPage>
         ),
 
         backgroundColor: backgroundColor,
-        body: Stack(children: <Widget>[Text("Money on account " + "not avaible due to bug")]));
+        body: Stack(children: <Widget>[Text("Money on account " + AccountData.balance + " " + AccountData.currency)]));
   }
 }
 
