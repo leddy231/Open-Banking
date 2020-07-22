@@ -63,8 +63,6 @@ class _bankListState extends State<bankList>
           child: AppBar(
             title: Text("Select Bank"),
             backgroundColor: Colors.lightGreen,
-
-
           ),
         ),
         drawer: GeneralDrawer(),
@@ -151,7 +149,7 @@ class BankItem implements ListBankItem {
           ),
           SizedBox(width: 10),
           Text(
-            bankData.name,
+            bankData.name.inCaps,
             style: TextStyle(color: Colors.black54, fontSize: 24),
             textAlign: TextAlign.left,
           ),

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'Drawer.dart';
 import '../backend/Auth.dart';
+import 'AccountDataPage.dart';
 
 final Color backgroundColor = Colors.white;
 int bankDataLength;
@@ -115,28 +116,35 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
   }
 
   Widget menu(context) {
-    return TabBarView(
-      controller: _tabController,
-      //Todo: For children add methods that run each specific page.
-      children: <Widget>[
-        accounts(context),
-        savings(context),
-        loans(context),
-        invoice(context)
-      ],
+    return Container(
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16),
+      //TEMPORARY SPACING
+      child: TabBarView(
+        controller: _tabController,
+        children: <Widget>[
+          accounts(context),
+          savings(context),
+          loans(context),
+          invoice(context)
+        ],
+      ),
     );
   }
 
   Widget accounts(context) {
-    setState(() {
-
-    });
+    setState(() {});
     return Container(
       child: StreamBuilder(
         stream: Auth.accounts(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
           if (snapshot.hasData) {
-         List<dynamic> accountList =  snapshot.data.map((account) => accountItem(account)).toList();
+            List<dynamic> accountList =
+                snapshot.data.map((account) => accountItem(account)).toList();
             return ListView.separated(
               shrinkWrap: true,
               itemCount: accountList.length ?? 1,
@@ -163,27 +171,21 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
   }
 
   Widget savings(context) {
-    setState(() {
-
-    });
+    setState(() {});
     return Container(
       child: Text("test2"),
     );
   }
 
   Widget loans(context) {
-    setState(() {
-
-    });
+    setState(() {});
     return Container(
       child: Text("test3"),
     );
   }
 
   Widget invoice(context) {
-    setState(() {
-
-    });
+    setState(() {});
     return Container(
       child: Text("test4"),
     );
@@ -202,21 +204,34 @@ class accountItem implements ListAccountItem {
   @override
   Widget buildAccountItem(BuildContext context) {
     return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          SizedBox(width: 10),
-          Text(
-            accountData.id,
-            style: TextStyle(color: Colors.black54, fontSize: 10),
-            textAlign: TextAlign.left,
-          ),
-        ],
+
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AccountDataPage(AccountData: accountData,)
+            )
+          );
+
+
+        },
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            SizedBox(width: 10),
+            Text(
+              accountData.id,
+              style: TextStyle(color: Colors.black54, fontSize: 10),
+              textAlign: TextAlign.left,
+            ),
+          ],
+        ),
       ),
     );
   }
