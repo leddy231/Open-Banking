@@ -1,3 +1,9 @@
+class BankAccount {
+  final String accesstoken;
+  final Bank bank;
+  BankAccount(this.accesstoken, this.bank);
+}
+
 class Bank {
     final String name;
     final String redirecturl;
