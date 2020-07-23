@@ -1,4 +1,5 @@
 import 'package:bankon/Frontend/AccountDataPage.dart';
+import 'package:bankon/Frontend/BankDataSliverPage.dart';
 
 import './settings.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'menuDashbordLayout.dart';
 import 'BankSelectionPage.dart';
 import 'BankDataPage.dart';
 import '../backend/Auth.dart';
+import 'BankDataSliverPage.dart';
 
 void main() {
   runApp(new BankonApp());
@@ -30,6 +32,7 @@ class BankonApp extends StatelessWidget {
         '/settings': (BuildContext context) => new settings(),
         '/BankDataPage': (BuildContext context) => new BankData(),
         '/startPage': (BuildContext context) => new BankonApp(),
+        '/BankDataSliverPage': (BuildContext context) => new BankSliverDataPage(),
 
       },
       home: new MainLoginPage(),

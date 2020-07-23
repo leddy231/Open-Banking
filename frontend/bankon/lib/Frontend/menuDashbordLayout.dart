@@ -122,7 +122,7 @@ class _MenuDashbordState extends State<MenuDashbord>
                   elevation: 2.0,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushNamed('/BankDataPage');
+                      Navigator.of(context).pushNamed('/BankDataSliverPage');
                     },
                     child: Center(
                       child: Text(

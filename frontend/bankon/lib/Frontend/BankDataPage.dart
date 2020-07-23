@@ -75,32 +75,30 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      SizedBox(
-                        width: 40,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    SizedBox(
+                      width: 40,
+                    ),
+                    Expanded(
+                      child: TabBar(
+                        indicatorWeight: 2,
+                        isScrollable: true,
+                        indicatorColor: Colors.white,
+                        controller: _tabController,
+                        tabs: BankTabs,
                       ),
-                      Expanded(
-                        child: TabBar(
-                          indicatorWeight: 2,
-                          isScrollable: true,
-                          indicatorColor: Colors.white,
-                          controller: _tabController,
-                          tabs: BankTabs,
-                        ),
+                    ),
+                    SizedBox(width: 10),
+                    //Todo: Fixa dropdown klart.
+                    DropdownButton(
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
                       ),
-                      SizedBox(width: 10),
-                      //Todo: Fixa dropdown klart.
-                      DropdownButton(
-                        icon: Icon(
-                          Icons.more_vert,
-                          color: Colors.white,
-                        ),
-                      )
-                    ],
-                  ),
+                    )
+                  ],
                 )
               ],
             ),
@@ -166,8 +164,6 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
                 for (var i = 0; i < accountList.length; i++) {
                   sum += int.parse(accountList[i].getAccountData().balance);
                 }
-                ;
-
                 return Column(
                   children: <Widget>[
                     Row(
