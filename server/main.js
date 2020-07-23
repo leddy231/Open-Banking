@@ -61,8 +61,9 @@ app.get('/auth', bankquery, async (req, res) => {
   res.send('ok')
 })
 
-app.post('/token', bankquery, async (req, res) => {
+app.post('/token', bankquery, fireuser, async (req, res) => {
   let response = await req.bank.auth.redirect.parse(req)
+  req.user.data.collection('banks').doc(req.bank.name).set({accesstoken: response.access_token})
   res.json({accesstoken: response.access_token})
 })
 
@@ -73,10 +74,9 @@ app.get('/accounts', bankquery, accesstoken, async (req, res) => {
 
 app.post('/accounts', bankquery, accesstoken, fireuser, async (req, res) => {
   let accounts = await req.bank.accounts.get(req)
-  user.data.collection('banks').doc(req.bank.name).set({added: true})
   for (const accountIndex in accounts) {
     var account = accounts[accountIndex]
-    user.data.collection('accounts').doc(account.account_id).set(account)
+    req.user.data.collection('accounts').doc(account.account_id).set(account)
   }
   res.json({status: 'ok'})
 })
