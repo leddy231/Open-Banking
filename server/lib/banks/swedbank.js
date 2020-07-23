@@ -37,7 +37,7 @@ async function getConsent(req) {
         })
         let headers = { 
             Date: moment().format(DateFormat) + 'GMT',
-            Authorization: 'Bearer ' + req.query.token,
+            Authorization: 'Bearer ' + req.query.accesstoken,
             'X-Request-ID': uuid(),
             'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             'PSU-User-Agent': 'axios/0.19.2',
@@ -112,7 +112,7 @@ async function getAccounts(req) {
         })
         let headers = {
             Date: moment().format(DateFormat) + ' GMT',
-            Authorization: 'Bearer ' + req.query.token,
+            Authorization: 'Bearer ' + req.query.accesstoken,
             'X-Request-ID': uuid(),
             'Consent-ID': consent.consentId,
             accept: 'application/json', 
@@ -120,6 +120,7 @@ async function getAccounts(req) {
         }
         const response = await axios.get(url, {headers: headers});
         var {accounts} = response.data
+        console.log(accounts)
         accounts = accounts.map((acc) => 
             wrangle(acc, swedbankAccountFilter)
         )

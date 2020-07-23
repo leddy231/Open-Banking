@@ -28,3 +28,4 @@ admin.initializeApp({
 
 export const storage = admin.storage().bucket('gs://bankon-1337.appspot.com')
 export const db = admin.firestore()
+export const auth = admin.auth()

@@ -1,8 +1,10 @@
 import path from 'path'
 import express from 'express'
+import morgan from 'morgan'
 import banks from './lib/banks/banks.js'
+import {db, storage, auth} from './lib/firebase.js'
 const app = express();
-
+app.use(morgan('combined'))
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
@@ -27,23 +29,60 @@ function bankquery(req, res, next) {
   }
 }
 
+async function fireuser(req, res, next) {
+  let token = req.query.firebasetoken
+  if(token != null) {
+    const decodedToken = await auth.verifyIdToken(token)
+    req.user = decodedToken
+    req.user.data = db.collection('users').doc(req.user.user_id)
+    next()
+  } else {
+    res.json({error: 'No firebase user token provided'})
+  }
+}
+
+function accesstoken(req, res, next) {
+  let token = req.query.accesstoken
+  if(token != null) {
+    req.token = token
+    next()
+  } else {
+    res.json({error: 'No accesstoken supplied'})
+  }
+}
+
 app.get('/redirecturl', bankquery, async (req, res) => {
   res.json({url: req.bank.auth.redirect.url})
 })
 
 app.get('/auth', bankquery, async (req, res) => {
-  let response = await req.bank.auth.redirect.parse(req)
-  res.redirect(`/accounts?bank=${req.bank.name}&token=${response.access_token}`)
+  //let response = await req.bank.auth.redirect.parse(req)
+  //res.redirect(`/accounts?bank=${req.bank.name}&token=${response.access_token}`)
+  res.send('ok')
 })
 
 app.post('/token', bankquery, async (req, res) => {
   let response = await req.bank.auth.redirect.parse(req)
-  res.json({token: response.access_token})
+  res.json({accesstoken: response.access_token})
 })
 
-app.get('/accounts', bankquery, async (req, res) => {
+app.get('/accounts', bankquery, accesstoken, async (req, res) => {
   let accounts = await req.bank.accounts.get(req)
   res.json(accounts)
+})
+
+app.post('/accounts', bankquery, accesstoken, fireuser, async (req, res) => {
+  let accounts = await req.bank.accounts.get(req)
+  user.data.collection('banks').doc(req.bank.name).set({added: true})
+  for (const accountIndex in accounts) {
+    var account = accounts[accountIndex]
+    user.data.collection('accounts').doc(account.account_id).set(account)
+  }
+  res.json({status: 'ok'})
+})
+
+app.post('/verifyFirebase', fireuser, async (req, res) => {
+  res.json(req.user)
 })
 
 app.get('/*', (req, res) => {

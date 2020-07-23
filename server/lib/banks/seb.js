@@ -23,11 +23,8 @@ const sebAccountFilter = {
         },
     ],
     "account_currency": "currency",
-    "account_owner": "ownerName",
-    "account_balance": "creditLine",
+    "account_balance": cnst("0"),//"creditLine",
     "account_type": "product",
-    "account_status": "status",
-    "account_bic": "bic",
 }
 
 async function decoupledAuth() {
@@ -61,10 +58,11 @@ async function getAccounts(req) {
             accept: 'application/json', 
             'X-Request-ID': uuid(),
             'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-            'Authorization': 'Bearer ' + req.query.token
+            'Authorization': 'Bearer ' + req.query.accesstoken
         }
         const response = await axios.get(url, {headers: headers});
         var {accounts} = response.data
+        console.log(accounts)
         accounts = accounts.map((acc) => 
             wrangle(acc, sebAccountFilter)
         )

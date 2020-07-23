@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'Drawer.dart';
 import '../backend/Auth.dart';
+import 'AccountDataPage.dart';
 
 final Color backgroundColor = Colors.white;
 int bankDataLength;
@@ -66,40 +67,43 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
     screenHeigh = size.height;
     screenWidth = size.width;
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.lightGreen,
-          flexibleSpace: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 40,
-                    ),
-                    Expanded(
-                      child: TabBar(
-                        indicatorWeight: 2,
-                        isScrollable: true,
-                        indicatorColor: Colors.white,
-                        controller: _tabController,
-                        tabs: BankTabs,
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(45),
+          child: AppBar(
+            backgroundColor: Colors.lightGreen,
+            flexibleSpace: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 40,
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    //Todo: Fixa dropdown klart.
-                    DropdownButton(
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: Colors.white,
+                      Expanded(
+                        child: TabBar(
+                          indicatorWeight: 2,
+                          isScrollable: true,
+                          indicatorColor: Colors.white,
+                          controller: _tabController,
+                          tabs: BankTabs,
+                        ),
                       ),
-                    )
-                  ],
-                ),
-              )
-            ],
+                      SizedBox(width: 10),
+                      //Todo: Fixa dropdown klart.
+                      DropdownButton(
+                        icon: Icon(
+                          Icons.more_vert,
+                          color: Colors.white,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
         drawer: GeneralDrawer(),
@@ -112,80 +116,137 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
   }
 
   Widget menu(context) {
-    return TabBarView(
-      controller: _tabController,
-      //Todo: For children add methods that run each specific page.
-      children: <Widget>[
-        accounts(context),
-        savings(context),
-        loans(context),
-        invoice(context)
-      ],
-    );
-  }
-
-  Widget accounts(context) {
-    setState(() {
-
-    });
     return Container(
-      child: StreamBuilder(
-        stream: Auth.accounts(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-         List<dynamic> accountList =  snapshot.data.map((account) => accountItem(account)).toList();
-            return ListView.separated(
-              shrinkWrap: true,
-              itemCount: accountList.length ?? 1,
-              itemBuilder: (context, index) {
-                final item = accountList[index];
-
-                //Here is all the banks that we added with bank info. Picture and associated route to their own pages
-                return item.buildAccountItem(context);
-              },
-
-              //add same here as for itemBuilder
-              separatorBuilder: (context, index) {
-                return Divider();
-              },
-            );
-          } else {
-            return Container(
-              child: Text("loading"),
-            );
-          }
-        },
+      child: TabBarView(
+        controller: _tabController,
+        children: <Widget>[
+          accounts(context),
+          savings(context),
+          loans(context),
+          invoice(context)
+        ],
       ),
     );
   }
 
-  Widget savings(context) {
-    setState(() {
+  Widget accounts(context) {
+    setState(() {});
+    return Column(
+      children: <Widget>[
+        Container(
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(
+                  "Temporay placeholder for financial graph data",
+                  textAlign: TextAlign.center,
+                ),
+                // Expanded(...)
+              ],
+            ),
+          ),
+          height: 200,
+          decoration: BoxDecoration(color: Colors.blueAccent),
+        ),
+        Container(
+          child: StreamBuilder(
+            stream: Auth.accounts(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.hasData) {
+                List<dynamic> accountList = snapshot.data
+                    .map((account) => accountItem(account))
+                    .toList();
+                int sum = 0;
+                for (var i = 0; i < accountList.length; i++) {
+                  sum += int.parse(accountList[i].getAccountData().balance);
+                }
+                ;
 
-    });
+                return Column(
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(
+                              left: 16.0, right: 16.0, top: 2),
+                          child: Text("Total balance:  " + sum.toString(),
+                              textAlign: TextAlign.right,
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ),
+                      ],
+                    ),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: accountList.length ?? 1,
+                      itemBuilder: (context, index) {
+                        final item = accountList[index];
+
+                        //Here is all the banks that we added with bank info. Picture and associated route to their own pages
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AccountDataPage(
+                                          AccountData: item.getAccountData(),
+                                        )));
+                          },
+                          child: item.buildAccountItem(context),
+                        );
+                      },
+
+                      //add same here as for itemBuilder
+                      separatorBuilder: (context, index) {
+                        return Divider();
+                      },
+                    ),
+                  ],
+                );
+              } else {
+                return Container(
+                  child: Text("loading"),
+                );
+              }
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget savings(context) {
+    setState(() {});
     return Container(
       child: Text("test2"),
     );
   }
 
   Widget loans(context) {
-    setState(() {
-
-    });
+    setState(() {});
     return Container(
       child: Text("test3"),
     );
   }
 
   Widget invoice(context) {
-    setState(() {
-
-    });
+    setState(() {});
     return Container(
       child: Text("test4"),
     );
   }
 }
+
+//Todo: Create class for generating account finansial report graph.
 
 abstract class ListAccountItem {
   Widget buildAccountItem(BuildContext context);
@@ -196,25 +257,77 @@ class accountItem implements ListAccountItem {
 
   accountItem(this.accountData);
 
+  Account getAccountData() {
+    return accountData;
+  }
+
   @override
   Widget buildAccountItem(BuildContext context) {
     return Container(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
+      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 2),
+      child: Column(
         children: <Widget>[
-          ClipRRect(
-            borderRadius: BorderRadius.circular(15),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              SizedBox(width: 10),
+              Text(
+                accountData.bank.name,
+                style: TextStyle(color: Colors.black, fontSize: 15),
+                textAlign: TextAlign.left,
+              ),
+              Spacer(
+                flex: 2,
+              ),
+              Text(
+                accountData.balance,
+                style: TextStyle(color: Colors.black, fontSize: 15),
+                textAlign: TextAlign.start,
+              )
+            ],
           ),
-          SizedBox(width: 10),
-          Text(
-            accountData.id,
-            style: TextStyle(color: Colors.black54, fontSize: 10),
-            textAlign: TextAlign.left,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              SizedBox(width: 10),
+              Text(
+                accountData.numbers[1].number,
+                style: TextStyle(color: Colors.black54, fontSize: 10),
+                textAlign: TextAlign.left,
+              ),
+              Spacer(
+                flex: 2,
+              ),
+              DropdownButtonHideUnderline(
+                child: DropdownButton(
+                  items: getAccountDropDownItems(),
+                  onTap: () {},
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: Colors.black,
+                  ),
+                ),
+              )
+            ],
           ),
         ],
       ),
     );
   }
+}
+
+List<DropdownMenuItem> getAccountDropDownItems() {
+  List<DropdownMenuItem> items = new List();
+  items.add(new DropdownMenuItem(
+      value: "place holder action",
+      child: new Text(
+        "place holder action",
+        style: TextStyle(color: Colors.white, fontFamily: 'semibold'),
+      )));
+
+  return items;
 }

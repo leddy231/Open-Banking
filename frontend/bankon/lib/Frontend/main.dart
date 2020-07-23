@@ -1,3 +1,5 @@
+import 'package:bankon/Frontend/AccountDataPage.dart';
+
 import './settings.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,7 +29,8 @@ class BankonApp extends StatelessWidget {
         '/bankSelect': (BuildContext context) => new bankList(),
         '/settings': (BuildContext context) => new settings(),
         '/BankDataPage': (BuildContext context) => new BankData(),
-        '/startPage': (BuildContext context) => new BankonApp()
+        '/startPage': (BuildContext context) => new BankonApp(),
+
       },
       home: new MainLoginPage(),
     );
@@ -279,9 +282,12 @@ class _MainLoginPageState extends State<MainLoginPage> {
      LoginStatus recived = await Auth.signIn(
         _emailTextController.text, _passwordTextController.text);
 
+
     setState(() {
       logginStatus = recived.show();
       logginStatusVisible = true;
     });
   }
+
+
 }
