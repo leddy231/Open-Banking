@@ -71,6 +71,7 @@ class Auth {
   static void setup() {
     getInitialUri().then((link) => Auth.interceptLink(link));
     getUriLinksStream().listen((link) => Auth.interceptLink(link));
+    Backend.getBanks();
   }
 
   static Stream<List<Account>> accounts() {
@@ -87,6 +88,20 @@ class Auth {
             .toList());
   }
 
+  static Stream<List<BankAccount>> userbanks() {
+    if (user == null) {
+      return Stream.empty();
+    }
+    return Firestore.instance
+        .collection('users')
+        .document(user.uid)
+        .collection('banks')
+        .snapshots()
+        .map((snapshot) => snapshot.documents
+        .map((doc) => BankAccount(doc.data['accesstoken'], Backend.banks.firstWhere((bank) => bank.name == doc.documentID)))
+        .toList());
+  }
+
   static void interceptLink(Uri link) async {
     if (link == null) {
       return;
@@ -98,12 +113,10 @@ class Auth {
     if (link.pathSegments.length > 0 && link.pathSegments[0] == 'auth') {
       String code = link.queryParameters['code'];
       String bank = link.queryParameters['bank'];
-      final gettoken = Backend.post('/token', {'bank': bank, 'code': code});
       final usertoken = await user.getIdToken();
-      final accesstoken = (await gettoken)['accesstoken'];
-      Backend.post('/accounts', {
+      final accesstoken = await Backend.post('/token', {
         'bank': bank,
-        'accesstoken': accesstoken,
+        'code': code,
         'firebasetoken': usertoken.token
       });
     }

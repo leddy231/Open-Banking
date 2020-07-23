@@ -9,6 +9,7 @@ const client_id = 'l711da77f864d94e9997abeeb6879f9f31'
 const client_secret = '4c4e430bf39e4252b0ba4d30e15b9e47'
 //https://bankon.leddy231.se/auth?bank=swedbank&code=8d3bb423-d5ba-4f16-8586-fecd3f3f1dad
 
+const consents = {};
 
 const swedbankAccountFilter = {
     "bank": cnst("swedbank"),
@@ -29,6 +30,11 @@ const swedbankAccountFilter = {
 }
 
 async function getConsent(req) {
+    if(consents[req.token] != null) {
+        console.log('got cached consent')
+        return consents[req.token]
+    }
+    console.log('getting new consent')
     try {
         //https://developer.swedbank.com/dev/apis/details/6cc65715-9803-4356-98af-708011b7dc7b/spec#/consent/putConsent
         let url = 'https://psd2.api.swedbank.com:443/sandbox/v3/consents/?' + qs.encode({
@@ -37,7 +43,7 @@ async function getConsent(req) {
         })
         let headers = { 
             Date: moment().format(DateFormat) + 'GMT',
-            Authorization: 'Bearer ' + req.query.accesstoken,
+            Authorization: 'Bearer ' + req.token,
             'X-Request-ID': uuid(),
             'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             'PSU-User-Agent': 'axios/0.19.2',
@@ -71,6 +77,7 @@ async function getConsent(req) {
             "validUntil": "2020-08-31"
         }
         const response = await axios.post(url, data, {headers: headers});
+        consents[req.token] = response.data
         return response.data
     } catch (error) {
         console.log(error)
@@ -112,7 +119,7 @@ async function getAccounts(req) {
         })
         let headers = {
             Date: moment().format(DateFormat) + ' GMT',
-            Authorization: 'Bearer ' + req.query.accesstoken,
+            Authorization: 'Bearer ' + req.token,
             'X-Request-ID': uuid(),
             'Consent-ID': consent.consentId,
             accept: 'application/json', 

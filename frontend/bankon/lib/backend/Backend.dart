@@ -5,13 +5,19 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Backend {
+  static List<Bank> banks;
+
   static Future<List<Bank>> getBanks() async {
+    if(banks != null) {
+      return banks;
+    }
     var snapshot = await Firestore.instance.collection('banks').getDocuments();
     final List<Bank> ret = [];
     for (var doc in snapshot.documents) {
       ret.add(
           Bank(doc.data['name'], doc.data['icon'], doc.data['redirecturl']));
     }
+    banks = ret;
     return ret;
   }
 
