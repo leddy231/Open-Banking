@@ -70,46 +70,48 @@ class _BankDataState extends State<BankSliverDataPage>
         body: NestedScrollView(
           headerSliverBuilder: (context, value) {
             return [
-              SliverAppBar(
-
-                pinned: true,
-                flexibleSpace: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        SizedBox(
-                          width: 40,
-                        ),
-                        Expanded(
-                          child: TabBar(
-                            indicatorWeight: 2,
-                            isScrollable: true,
-                            indicatorColor: Colors.white,
-                            controller: _tabController,
-                            tabs: BankTabs,
+              SliverOverlapAbsorber(
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar(
+                  backgroundColor: Colors.lightGreen,
+                  pinned: true,
+                  floating: false,
+                  flexibleSpace: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          SizedBox(
+                            width: 40,
                           ),
-                        ),
-                        SizedBox(width: 10),
-                        //Todo: Fixa dropdown klart.
-                        DropdownButton(
-                          icon: Icon(
-                            Icons.more_vert,
-                            color: Colors.white,
+                          Expanded(
+                            child: TabBar(
+                              indicatorWeight: 2,
+                              isScrollable: true,
+                              indicatorColor: Colors.white,
+                              controller: _tabController,
+                              tabs: BankTabs,
+                            ),
                           ),
-                        )
-                      ],
-                    ),
-                  ],
+                          SizedBox(width: 10),
+                          //Todo: Fixa dropdown klart.
+                          DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              icon: Icon(
+                                Icons.more_vert,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              SliverPersistentHeader(
-                pinned: false,
-                floating: true,
-                delegate: AccountDataPageHeader(maxExtent: 60,minExtent: 60),
-              )
             ];
           },
           body: menu(context),
@@ -142,22 +144,36 @@ class _BankDataState extends State<BankSliverDataPage>
             onNotification: (scrollNotification) {
               return true;
             },
-            child: CustomScrollView(
-              slivers: <Widget>[
-
-                StreamBuilder(
-                    stream: Auth.accounts(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasData) {
-                        List<dynamic> accountList = snapshot.data
-                            .map((account) => accountItem(account))
-                            .toList();
-
-                        return SliverPadding(
-                          padding: const EdgeInsets.all(8.0),
-                          sliver: SliverList(
+            child: StreamBuilder(
+                stream: Auth.accounts(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    List<dynamic> accountList = snapshot.data
+                        .map((account) => accountItem(account))
+                        .toList();
+                    int sum = 0;
+                    for (var i = 0; i < accountList.length; i++) {
+                      sum += int.parse(accountList[i].getAccountData().balance);
+                    }
+                    //Todo: Plocka ut dem och skapa en ny klass dit man skickar en ny sån grej.
+                    return RefreshIndicator(
+                      onRefresh: () {
+                        return accountList = getNewData();
+                      },
+                      child: CustomScrollView(
+                        slivers: <Widget>[
+                          SliverOverlapInjector(
+                            handle:
+                                NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                    context),
+                          ),
+                          SliverPersistentHeader(
+                            pinned: true,
+                            delegate: _SliverAppBarDelegate(sum),
+                          ),
+                          SliverList(
                             delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
+                              (BuildContext context, int index) {
                                 final item = accountList[index];
                                 return InkWell(
                                   onTap: () {
@@ -166,8 +182,8 @@ class _BankDataState extends State<BankSliverDataPage>
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 AccountDataPage(
-                                                  AccountData: item
-                                                      .getAccountData(),
+                                                  AccountData:
+                                                      item.getAccountData(),
                                                 )));
                                   },
                                   child: item.buildAccountItem(context),
@@ -175,39 +191,15 @@ class _BankDataState extends State<BankSliverDataPage>
                               },
                               childCount: accountList.length ?? 1,
                             ),
-                          ),
-                        );
-                      } else
-                        return SliverPadding(
-                          padding: const EdgeInsets.all(8.0),
-                          sliver: SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                                  (BuildContext context, int index) {
-                                return Column(
-                                  children: <Widget>[
-                                    Container(
-                                      height: 150,
-                                      width: double.infinity,
-                                      color: Colors.blueGrey,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                        children: <Widget>[Text('hi $index')],
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 8,
-                                    )
-                                  ],
-                                );
-                              },
-                              childCount: 1,
-                            ),
-                          ),
-                        );;
-                    }),
-              ],
-            ),
+                          )
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Column(
+                        children: <Widget>[CircularProgressIndicator()]);
+                  }
+                }),
           );
         },
       ),
@@ -319,49 +311,37 @@ List<DropdownMenuItem> getAccountDropDownItems() {
   return items;
 }
 
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final sum;
 
-class AccountDataPageHeader implements SliverPersistentHeaderDelegate {
-  AccountDataPageHeader({
-    this.minExtent,
-    @required this.maxExtent
-  });
-
-  final double minExtent;
-  final double maxExtent;
+  _SliverAppBarDelegate(this.sum);
 
   @override
-  Widget build(BuildContext context, double shrinkOffset,
-      bool overlapsContent) {
-    return Stack(
-      fit: StackFit.expand,
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            SizedBox(height: 40,),
-            Row(
-              children: <Widget>[
-                Text(
-                    "Test"
-                )
-              ],
-            )
-          ],
-        )
-      ],
+  double get minExtent => 20;
+
+  @override
+  double get maxExtent => 40;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new Container(
+      child: Column(
+        children: <Widget>[
+          Text("Total balance:  " + sum.toString(),
+              textAlign: TextAlign.right,
+              style: TextStyle(color: Colors.black, fontSize: 15)),
+        ],
+      ),
     );
   }
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
     return false;
   }
+}
 
-  @override
-  FloatingHeaderSnapConfiguration get snapConfiguration => null;
-
-  @override
-  // TODO: implement stretchConfiguration
-  OverScrollHeaderStretchConfiguration get stretchConfiguration => null;
-
-
+getNewData() async {
+  return await Auth.accounts().map((account) => accountItem).toList();
 }
