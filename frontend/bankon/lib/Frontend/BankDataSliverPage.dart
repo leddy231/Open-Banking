@@ -1,3 +1,5 @@
+
+
 import 'package:bankon/backend/Account.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,33 +38,30 @@ class _BankDataState extends State<BankSliverDataPage>
   bool isCollapsed = true;
   double screenWidth, screenHeigh;
   final Duration duration = const Duration(milliseconds: 100);
-  AnimationController _controller;
-  Animation<double> _scaleAnimation;
-  Animation<double> _menuScaleAnimation;
-  Animation<Offset> _slideAnimation;
   TabController _tabController;
-
+  int tabPage = 0;
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: duration);
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(_controller);
-    _menuScaleAnimation =
-        Tween<double>(begin: 0.5, end: 1).animate(_controller);
-    _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
-        .animate(_controller);
     _tabController = TabController(vsync: this, length: BankTabs.length);
+    _tabController.addListener(_handleTabIndex);
+  }
+
+
+  void _handleTabIndex() {
+    setState(() {
+      tabPage = _tabController.index;
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _tabController.removeListener(_handleTabIndex);
     _tabController.dispose();
     super.dispose();
   }
 
 //test
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -96,6 +95,7 @@ class _BankDataState extends State<BankSliverDataPage>
                               tabs: BankTabs,
                             ),
                           ),
+
                           SizedBox(width: 10),
                           //Todo: Fixa dropdown klart.
                           DropdownButtonHideUnderline(
@@ -114,10 +114,12 @@ class _BankDataState extends State<BankSliverDataPage>
               ),
             ];
           },
-          body: menu(context),
+          body: menu(context)
         ),
         drawer: GeneralDrawer(),
         backgroundColor: backgroundColor,
+        floatingActionButton: _tabActionButton(tabPage, context)
+
       ),
     );
   }
@@ -344,4 +346,22 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
 getNewData() async {
   return await Auth.accounts().map((account) => accountItem).toList();
+}
+
+Widget _tabActionButton(int tabPage,BuildContext context){
+ return Visibility(
+    visible: tabPage == 0,
+    child: FloatingActionButton(
+        shape: StadiumBorder(),
+        onPressed: () {
+        Navigator.of(context).pushNamed('/InitTransaction');
+        },
+        elevation: 8,
+        tooltip: "Add Transaction",
+        backgroundColor: Colors.lightGreen,
+        child: Icon(
+          Icons.add,
+          size: 20.0,
+        )),
+  );
 }

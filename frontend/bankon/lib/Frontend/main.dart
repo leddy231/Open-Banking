@@ -1,5 +1,6 @@
 import 'package:bankon/Frontend/AccountDataPage.dart';
 import 'package:bankon/Frontend/BankDataSliverPage.dart';
+import 'package:bankon/Frontend/InitiateTransaction.dart';
 
 import './settings.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'BankSelectionPage.dart';
 import 'BankDataPage.dart';
 import '../backend/Auth.dart';
 import 'BankDataSliverPage.dart';
+import 'InitiateTransaction.dart';
 
 void main() {
   runApp(new BankonApp());
@@ -24,17 +26,18 @@ class BankonApp extends StatelessWidget {
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
-        '/signup': (BuildContext context) => new SignupPage(),
-        '/login': (BuildContext context) => new MainLoginPage(),
-        '/resetPass': (BuildContext context) => new resetPass(),
-        '/menu': (BuildContext context) => new MenuDashbord(),
-        '/bankSelect': (BuildContext context) => new bankList(),
-        '/settings': (BuildContext context) => new settings(),
-        '/BankDataPage': (BuildContext context) => new BankData(),
-        '/startPage': (BuildContext context) => new BankonApp(),
-        '/BankDataSliverPage': (BuildContext context) => new BankSliverDataPage(),
+    '/signup': (BuildContext context) => new SignupPage(),
+    '/login': (BuildContext context) => new MainLoginPage(),
+    '/resetPass': (BuildContext context) => new resetPass(),
+    '/menu': (BuildContext context) => new MenuDashbord(),
+    '/bankSelect': (BuildContext context) => new bankList(),
+    '/settings': (BuildContext context) => new settings(),
+    '/BankDataPage': (BuildContext context) => new BankData(),
+    '/startPage': (BuildContext context) => new BankonApp(),
+    '/BankDataSliverPage': (BuildContext context) => new BankSliverDataPage(),
+    '/InitTransaction' : (BuildContext context) => new InitTransaction(),
 
-      },
+    },
       home: new MainLoginPage(),
     );
   }
@@ -48,7 +51,7 @@ class MainLoginPage extends StatefulWidget {
 class _MainLoginPageState extends State<MainLoginPage> {
   final _passwordTextController = TextEditingController();
   final _emailTextController = TextEditingController();
-  var logginStatus = "hej";
+  var logginStatus = "Uninitiated";
   var logginStatusVisible = false;
 
   @override
@@ -282,7 +285,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
   }
 
   getAuthSignIn() async {
-     LoginStatus recived = await Auth.signIn(
+    LoginStatus recived = await Auth.signIn(
         _emailTextController.text, _passwordTextController.text);
 
 
