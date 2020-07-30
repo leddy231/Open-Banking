@@ -4,6 +4,7 @@ import morgan from 'morgan'
 import banks from './lib/banks/banks.js'
 import {db, storage, auth} from './lib/firebase.js'
 const app = express();
+
 app.use(morgan('combined'))
 app.use(express.urlencoded({ extended: true }));
 
@@ -63,7 +64,7 @@ app.get('/auth', bankquery, async (req, res) => {
 
 app.post('/token', bankquery, fireuser, async (req, res) => {
   let response = await req.bank.auth.redirect.parse(req)
-  req.user.data.collection('banks').doc(req.bank.name).set({accesstoken: response.access_token})
+  req.user.data.collection('banks').doc(req.bank.name).set({accesstoken: response.access_token, consent: false})
   res.json({accesstoken: response.access_token})
 })
 
@@ -81,6 +82,21 @@ app.post('/accounts', bankquery, accesstoken, fireuser, async (req, res) => {
   res.json({status: 'ok'})
 })
 
+app.post('/consent', bankquery, accesstoken, fireuser, async (req, res) => {
+  const data = await req.user.data.collection('accounts').get()
+  let accounts = []
+  data.forEach((doc) => {
+    accounts.push(doc.data())
+  });
+  let response = await req.bank.accounts.consent(req, accounts)
+  console.log(response)
+  res.json(response)
+})
+
+app.all('/validconsent', bankquery, async (req, res) => {
+  await db.collection('users').doc(req.query.user).collection('banks').doc(req.bank.name).update({consent: true})
+  res.send('<h1>You can return to the Bankon app now</h1>')
+})
 app.post('/verifyFirebase', fireuser, async (req, res) => {
   res.json(req.user)
 })

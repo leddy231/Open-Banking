@@ -9,8 +9,6 @@ const client_id = 'l711da77f864d94e9997abeeb6879f9f31'
 const client_secret = '4c4e430bf39e4252b0ba4d30e15b9e47'
 //https://bankon.leddy231.se/auth?bank=swedbank&code=8d3bb423-d5ba-4f16-8586-fecd3f3f1dad
 
-const consents = {};
-
 const swedbankAccountFilter = {
     "bank": cnst("swedbank"),
     "account_id": "resourceId",
@@ -30,11 +28,6 @@ const swedbankAccountFilter = {
 }
 
 async function getConsent(req) {
-    if(consents[req.token] != null) {
-        console.log('got cached consent')
-        return consents[req.token]
-    }
-    console.log('getting new consent')
     try {
         //https://developer.swedbank.com/dev/apis/details/6cc65715-9803-4356-98af-708011b7dc7b/spec#/consent/putConsent
         let url = 'https://psd2.api.swedbank.com:443/sandbox/v3/consents/?' + qs.encode({
@@ -77,8 +70,47 @@ async function getConsent(req) {
             "validUntil": "2020-08-31"
         }
         const response = await axios.post(url, data, {headers: headers});
-        consents[req.token] = response.data
         return response.data
+    } catch (error) {
+        console.log(error)
+        console.log(error.response.data)
+    }
+}
+
+async function getDetailedConsent(req, accounts) {
+    try {
+        //https://developer.swedbank.com/dev/apis/details/6cc65715-9803-4356-98af-708011b7dc7b/spec#/consent/putConsent
+        let url = 'https://psd2.api.swedbank.com:443/sandbox/v3/consents/?' + qs.encode({
+            bic: "SANDSESS",
+            'app-id': client_id,
+        })
+        let headers = { 
+            Date: moment().format(DateFormat) + 'GMT',
+            Authorization: 'Bearer ' + req.token,
+            'X-Request-ID': uuid(),
+            'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+            'PSU-User-Agent': 'axios/0.19.2',
+            'TPP-Redirect-Preferred': true,
+            'TPP-Redirect-URI': 'https://bankon.leddy231.se/validconsent?bank=swedbank&user=' + req.user.user_id,
+            'Content-Type': 'application/json'
+        }
+        let ibanlist = accounts.map((acc) => {
+            return {iban: acc.account_numbers[0].number}
+        })
+        let data = {
+            "access": {
+                "accounts": ibanlist,
+                "balances": ibanlist,
+                "transactions": ibanlist
+            },
+            "combinedServiceIndicator": true,
+            "frequencyPerDay": 4,
+            "recurringIndicator": false,
+            "validUntil": "2020-08-31"
+        }
+        const response = await axios.post(url, data, {headers: headers});
+        req.user.data.collection('banks').doc('swedbank').update({consentId: response.data.consentId})
+        return {url: response.data['_links'].scaRedirect.href}
     } catch (error) {
         console.log(error)
         console.log(error.response.data)
@@ -138,6 +170,35 @@ async function getAccounts(req) {
     }
 }
 
+async function getAccountBalance(req, accountid) {
+    try {
+        //https://developer.swedbank.com/dev/apis/details/7ae2ca0f-c1f6-4e58-a9e6-e9b2d51d07e8/spec#/accounts/getAccounts
+        let consent = await getDetailedConsent(req);
+        let url = "https://psd2.api.swedbank.com:443/sandbox/v3/accounts/"+accountid+"/balances?" + qs.encode({
+            bic: "SANDSESS",
+            'app-id': client_id,
+        })
+        let headers = {
+            Date: moment().format(DateFormat) + ' GMT',
+            Authorization: 'Bearer ' + req.token,
+            'X-Request-ID': uuid(),
+            'Consent-ID': consent.consentId,
+            accept: 'application/json', 
+            'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+        }
+        const response = await axios.get(url, {headers: headers});
+        var {balances} = response.data
+        console.log(balances)
+        //accounts = accounts.map((acc) => 
+        //    wrangle(acc, swedbankAccountFilter)
+        //)
+        return balances
+    } catch (error) {
+        console.log(error)
+        console.log(error.response.data)
+    }
+}
+
 const auth = {
     redirect: {
         url: 'https://se.psd2.api.swedbank.com:443/psd2/authorize?' + qs.encode({
@@ -155,6 +216,8 @@ export default {
     name: 'swedbank',
     auth: auth,
     accounts: {
-        get: getAccounts
+        get: getAccounts,
+        balance: getAccountBalance,
+        consent: getDetailedConsent
     }
 }
