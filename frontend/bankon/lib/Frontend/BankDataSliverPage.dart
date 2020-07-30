@@ -1,5 +1,5 @@
 
-
+import 'package:decimal/decimal.dart';
 import 'package:bankon/backend/Account.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +73,15 @@ class _BankDataState extends State<BankSliverDataPage>
                 handle:
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
+                  leading: InkWell(
+                    onTap: (){
+                      Navigator.pushNamed(context, '/menu');
+
+                    },
+                    child: Icon(
+                        Icons.keyboard_backspace
+                    ),
+                  ),
                   backgroundColor: Colors.lightGreen,
                   pinned: true,
                   floating: false,
@@ -153,9 +162,9 @@ class _BankDataState extends State<BankSliverDataPage>
                     List<dynamic> accountList = snapshot.data
                         .map((account) => accountItem(account))
                         .toList();
-                    int sum = 0;
+                    Decimal sum = Decimal.parse('0');
                     for (var i = 0; i < accountList.length; i++) {
-                      sum += int.parse(accountList[i].getAccountData().balance);
+                      sum += Decimal.parse(accountList[i].getAccountData().balance);
                     }
                     //Todo: Plocka ut dem och skapa en ny klass dit man skickar en ny sån grej.
                     return RefreshIndicator(
