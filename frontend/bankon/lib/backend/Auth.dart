@@ -98,7 +98,7 @@ class Auth {
         .collection('banks')
         .snapshots()
         .map((snapshot) => snapshot.documents
-        .map((doc) => BankAccount(doc.data['accesstoken'], Backend.banks.firstWhere((bank) => bank.name == doc.documentID)))
+        .map((doc) => BankAccount(doc.data['accesstoken'], doc.data['consent'], Backend.banks.firstWhere((bank) => bank.name == doc.documentID)))
         .toList());
   }
 
@@ -117,6 +117,14 @@ class Auth {
       final accesstoken = await Backend.post('/token', {
         'bank': bank,
         'code': code,
+        'firebasetoken': usertoken.token
+      });
+    }
+    if (link.pathSegments.length > 0 && link.pathSegments[0] == 'consent') {
+      String bank = link.queryParameters['bank'];
+      final usertoken = await user.getIdToken();
+      Backend.post('/validconsent', {
+        'bank': bank,
         'firebasetoken': usertoken.token
       });
     }

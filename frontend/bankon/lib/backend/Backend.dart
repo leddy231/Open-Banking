@@ -1,10 +1,12 @@
 
+import 'package:bankon/backend/Auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bankon/backend/Account.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Backend {
+
   static List<Bank> banks;
 
   static Future<List<Bank>> getBanks() async {
@@ -30,6 +32,25 @@ class Backend {
     } else {
       throw Exception('Failed post');
     }
+  }
+
+  static void getAccounts(BankAccount acc) async {
+    final usertoken = await Auth.user.getIdToken();
+    Backend.post('/accounts', {
+      'bank': acc.bank.name,
+      'accesstoken': acc.accesstoken,
+      'firebasetoken': usertoken.token
+    });
+  }
+
+  static Future<String> getConsent(BankAccount acc) async {
+    final usertoken = await Auth.user.getIdToken();
+    final data = await Backend.post('/consent', {
+      'bank': acc.bank.name,
+      'accesstoken': acc.accesstoken,
+      'firebasetoken': usertoken.token
+    });
+    return data['url'];
   }
 }
   /*

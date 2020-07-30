@@ -46,7 +46,6 @@ class _MainLoginPageState extends State<MainLoginPage> {
                 }
                 return Column(
                   children: [
-                    Text('Yeet'),
                     Text(user.email),
                     FutureBuilder<List<Bank>>(
                       future: Backend.getBanks(),
@@ -66,6 +65,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
                                 children: snapshot.data
                                     .map(
                                       (e) => GestureDetector(
+                                        onTap: () => Backend.getAccounts(e),
                                         child: Row(
                                           children: [
                                             Text(e.bank.name),
@@ -74,6 +74,27 @@ class _MainLoginPageState extends State<MainLoginPage> {
                                         ),
                                       ),
                                     )
+                                    .toList(),
+                              ),
+                              initialData: [],
+                            ),StreamBuilder<List<Account>>(
+                              stream: Auth.accounts(),
+                              builder: (context, snapshot) => Column(
+                                children: snapshot.data
+                                    .map(
+                                      (e) => GestureDetector(
+                                    onTap: () async {
+                                      String url = await Backend.getConsent(e.bank.account);
+                                      launch(url);
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(e.id),
+                                        Text(e.bank.account.consent.toString())
+                                      ],
+                                    ),
+                                  ),
+                                )
                                     .toList(),
                               ),
                               initialData: [],
