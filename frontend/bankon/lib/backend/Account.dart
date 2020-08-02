@@ -1,3 +1,5 @@
+import 'dart:indexed_db';
+
 import 'Backend.dart';
 
 class BankAccount {
@@ -30,6 +32,24 @@ class AccountNr {
     String toString() => 'AccountNr<$type:$number>';
 }
 
+class Transaction {
+  final String amount;
+  final String currency;
+  final String date;
+  final bool pending;
+  final Account account;
+  Transaction({this.amount, this.currency, this.date, this.pending, this.account});
+  static Transaction fromJson(Map<String, dynamic> data, Account acc) {
+    return Transaction(
+      amount: data['amount'],
+      currency: data['currency'],
+      date: data['date'],
+      pending: data['pending'],
+      account: acc
+    );
+  }
+}
+
 class Account {
     final Bank bank;
     final String id;
@@ -38,12 +58,13 @@ class Account {
     //final String owner;
     final String balance;
     final String type;
+    final String userid;
     //final String status;
     //final String bic;
-    Account._create({this.bank, this.id, this. numbers, this.currency, this.balance, this.type});
+    Account._create({this.bank, this.id, this. numbers, this.currency, this.balance, this.type, this.userid});
     String toString() => 'Account<$id>';
 
-    static Account fromJson(Map<String, dynamic> data) {
+    static Account fromJson(Map<String, dynamic> data, String userid) {
         try {
             var bank = Backend.banks.firstWhere((bank) => bank.name == data['bank']);
             List<AccountNr> numbers = [];
@@ -68,6 +89,7 @@ class Account {
                 //owner: data['account_owner'],
                 balance: data['account_balance'],
                 type: data['account_type'],
+                userid: userid
                 //status: data['account_status'],
                 //bic: data['account_bic']
             );

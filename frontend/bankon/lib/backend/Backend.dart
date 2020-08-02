@@ -43,6 +43,15 @@ class Backend {
     });
   }
 
+  static void getAccountDetails(BankAccount acc) async {
+    final usertoken = await Auth.user.getIdToken();
+    Backend.post('/accountDetails', {
+      'bank': acc.bank.name,
+      'accesstoken': acc.accesstoken,
+      'firebasetoken': usertoken.token
+    });
+  }
+
   static Future<String> getConsent(BankAccount acc) async {
     final usertoken = await Auth.user.getIdToken();
     final data = await Backend.post('/consent', {

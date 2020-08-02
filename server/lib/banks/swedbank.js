@@ -1,10 +1,11 @@
-import { cnst, wrangle } from  '../wrangler.js';
+import { cnst, wrangle, join, map } from  '../wrangler.js';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import qs from 'querystring'
 import moment from 'moment'
 
 const DateFormat = "ddd, DD MMM YYYY HH:mm:ssz"
+const DateFormatTransactions = "ddd, DD MMM YYYY"
 const client_id = 'l711da77f864d94e9997abeeb6879f9f31'
 const client_secret = '4c4e430bf39e4252b0ba4d30e15b9e47'
 //https://bankon.leddy231.se/auth?bank=swedbank&code=8d3bb423-d5ba-4f16-8586-fecd3f3f1dad
@@ -25,6 +26,23 @@ const swedbankAccountFilter = {
     "account_currency": "currency",
     "account_balance": cnst("0"),
     "account_type": "product",
+}
+
+const swedbankTransactionsFilter = {
+    'transactions': join([
+        map('transactions.pending', {
+            'amount': 'transactionAmount.amount',
+            'currency': 'transactionAmount.currency',
+            'date': 'valueDate',
+            'pending': cnst(true)
+        }),
+        map('transactions.booked', {
+            'amount': 'transactionAmount.amount',
+            'currency': 'transactionAmount.currency',
+            'date': 'valueDate',
+            'pending': cnst(false)
+        })
+    ])
 }
 
 async function getConsent(req) {
@@ -105,7 +123,7 @@ async function getDetailedConsent(req, accounts) {
             },
             "combinedServiceIndicator": true,
             "frequencyPerDay": 4,
-            "recurringIndicator": false,
+            "recurringIndicator": true,
             "validUntil": "2020-08-31"
         }
         const response = await axios.post(url, data, {headers: headers});
@@ -170,29 +188,70 @@ async function getAccounts(req) {
     }
 }
 
-async function getAccountBalance(req, accountid) {
-    try {
-        //https://developer.swedbank.com/dev/apis/details/7ae2ca0f-c1f6-4e58-a9e6-e9b2d51d07e8/spec#/accounts/getAccounts
-        let consent = await getDetailedConsent(req);
-        let url = "https://psd2.api.swedbank.com:443/sandbox/v3/accounts/"+accountid+"/balances?" + qs.encode({
-            bic: "SANDSESS",
-            'app-id': client_id,
-        })
-        let headers = {
-            Date: moment().format(DateFormat) + ' GMT',
-            Authorization: 'Bearer ' + req.token,
-            'X-Request-ID': uuid(),
-            'Consent-ID': consent.consentId,
-            accept: 'application/json', 
-            'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+async function validconsent(req, userdata) {
+    await userdata.collection('banks').doc(req.bank.name).update({consent: true})
+    let bankdata = await userdata.collection('banks').doc(req.bank.name).get();
+    let consentId = bankdata.data().consentId
+    const snapshot = await userdata.collection('accounts').get()
+    snapshot.forEach((doc) => {
+        let account = doc.data();
+        if(account.bank == req.bank.name) {
+            getAccountBalance(req, account.account_id, consentId)
         }
-        const response = await axios.get(url, {headers: headers});
-        var {balances} = response.data
-        console.log(balances)
-        //accounts = accounts.map((acc) => 
-        //    wrangle(acc, swedbankAccountFilter)
-        //)
-        return balances
+    });
+}
+
+async function getAccountDetails(req) {
+    try {
+        let bankdata = await req.user.data.collection('banks').doc(req.bank.name).get();
+        let consentId = bankdata.data().consentId
+        const snapshot = await req.user.data.collection('accounts').get()
+        snapshot.forEach((doc) => {
+            let account = doc.data();
+            if(account.bank == req.bank.name) {
+                //https://developer.swedbank.com/dev/apis/details/7ae2ca0f-c1f6-4e58-a9e6-e9b2d51d07e8/spec#/accounts/getAccounts
+                let url = "https://psd2.api.swedbank.com:443/sandbox/v3/accounts/"+account.account_id+"/balances?" + qs.encode({
+                    bic: "SANDSESS",
+                    'app-id': client_id,
+                })
+                let headers = {
+                    Date: moment().format(DateFormat) + ' GMT',
+                    Authorization: 'Bearer ' + req.token,
+                    'X-Request-ID': uuid(),
+                    'Consent-ID': consentId,
+                    accept: 'application/json', 
+                    'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+                }
+                /*
+                axios.get(url, {headers: headers}).then((res) => {
+                    let balance = res.data.balances[0].balanceAmount.amount
+                    req.user.data.collection('accounts').doc(account.account_id).update({'account_balance': balance})
+                })
+                */
+                let urlTransactions = "https://psd2.api.swedbank.com:443/sandbox/v3/accounts/"+account.account_id+"/transactions?" + qs.encode({
+                    bic: "SANDSESS",
+                    'app-id': client_id,
+                    dateFrom: moment().subtract(20, 'days').format('YYYY-MM-DD'),
+                    dateTo: moment().format('YYYY-MM-DD'),
+                    bookingStatus: 'both',
+                })
+                axios.get(urlTransactions, {headers: headers}).then((res) => {
+                    let data = wrangle(res.data, swedbankTransactionsFilter)
+                    console.log(data)
+                    req.user.data.collection('accounts').doc(account.account_id).update(data)
+                }).catch((error) => {
+                    if(error.response != null) {
+                        console.log(error.response.data)
+                    } else {
+                        console.log(error)
+                    }
+                    
+                    
+                })
+
+            }
+        });
+        
     } catch (error) {
         console.log(error)
         console.log(error.response.data)
@@ -217,7 +276,7 @@ export default {
     auth: auth,
     accounts: {
         get: getAccounts,
-        balance: getAccountBalance,
-        consent: getDetailedConsent
+        consent: getDetailedConsent,
+        details: getAccountDetails
     }
 }

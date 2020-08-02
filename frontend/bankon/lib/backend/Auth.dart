@@ -1,4 +1,4 @@
-import 'package:bankon/backend/Backend.dart';
+import './Backend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uni_links/uni_links.dart';
@@ -84,7 +84,7 @@ class Auth {
         .collection('accounts')
         .snapshots()
         .map((snapshot) => snapshot.documents
-            .map((doc) => Account.fromJson(doc.data))
+            .map((doc) => Account.fromJson(doc.data, user.uid))
             .toList());
   }
 
@@ -98,8 +98,31 @@ class Auth {
         .collection('banks')
         .snapshots()
         .map((snapshot) => snapshot.documents
-        .map((doc) => BankAccount(doc.data['accesstoken'], doc.data['consent'], Backend.banks.firstWhere((bank) => bank.name == doc.documentID)))
-        .toList());
+            .map((doc) => BankAccount(
+                doc.data['accesstoken'],
+                doc.data['consent'],
+                Backend.banks
+                    .firstWhere((bank) => bank.name == doc.documentID)))
+            .toList());
+  }
+
+  static Stream<List<Transaction>> transactions(Account acc) {
+    if (user == null) {
+      return Stream.empty();
+    }
+    if (acc.bank.account == null || acc.bank.account.consent == false) {
+      return Stream.empty();
+    }
+    return Firestore.instance
+        .collection('users')
+        .document(acc.userid)
+        .collection('accounts')
+        .document(acc.id)
+        .snapshots()
+        .map((doc) => doc['transaction']
+            .map(
+                (transactiondata) => Transaction.fromJson(transactiondata, acc))
+            .toList());
   }
 
   static void interceptLink(Uri link) async {
@@ -114,19 +137,14 @@ class Auth {
       String code = link.queryParameters['code'];
       String bank = link.queryParameters['bank'];
       final usertoken = await user.getIdToken();
-      final accesstoken = await Backend.post('/token', {
-        'bank': bank,
-        'code': code,
-        'firebasetoken': usertoken.token
-      });
+      final accesstoken = await Backend.post('/token',
+          {'bank': bank, 'code': code, 'firebasetoken': usertoken.token});
     }
     if (link.pathSegments.length > 0 && link.pathSegments[0] == 'consent') {
       String bank = link.queryParameters['bank'];
       final usertoken = await user.getIdToken();
-      Backend.post('/validconsent', {
-        'bank': bank,
-        'firebasetoken': usertoken.token
-      });
+      Backend.post(
+          '/validconsent', {'bank': bank, 'firebasetoken': usertoken.token});
     }
   }
 
@@ -170,7 +188,8 @@ class Auth {
       return RegisterStatus.invalidInput;
     }
     try {
-      final AuthResult authResult = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      final AuthResult authResult = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       user = authResult.user;
     } catch (e) {
       switch (e.code) {

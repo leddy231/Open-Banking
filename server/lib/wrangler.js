@@ -5,6 +5,7 @@ function dig(obj, string) {
         return null 
     }
     var result = obj;
+
     levels.forEach((level) => {
         result = result[level]
         if(result == null) {
@@ -46,14 +47,25 @@ export function firstOf(list) {
 
 export function concat(list) {
     return (input) => {
-        list = list.map((item) => wrangle(input, item));
-        return list.reduce((accumulator, currentValue) => accumulator + currentValue);
+        let out = list.map((item) => wrangle(input, item));
+        return out.reduce((accumulator, currentValue) => accumulator + currentValue);
+    }
+}
+
+export function join(list) {
+    return (input) => {
+        let out = list.map((item) => wrangle(input, item));
+        let res = []
+        out.forEach(l => {
+            res = res.concat(l)
+        })
+        return res
     }
 }
 
 export function map(name, filter) {
     return (input) => {
-        list = wrangle(input, name);
+        let list = wrangle(input, name);
         return list.map((item) => wrangle(item, filter));
     }
 }

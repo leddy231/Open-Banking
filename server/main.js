@@ -82,6 +82,11 @@ app.post('/accounts', bankquery, accesstoken, fireuser, async (req, res) => {
   res.json({status: 'ok'})
 })
 
+app.post('/accountDetails', bankquery, accesstoken, fireuser, async (req, res) => {
+  await req.bank.accounts.details(req);
+  res.json({status: 'ok'})
+})
+
 app.post('/consent', bankquery, accesstoken, fireuser, async (req, res) => {
   const data = await req.user.data.collection('accounts').get()
   let accounts = []
