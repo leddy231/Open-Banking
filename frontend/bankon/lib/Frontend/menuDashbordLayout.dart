@@ -5,6 +5,7 @@ import '../backend/Auth.dart';
 import '../backend/Account.dart';
 import '../backend/Backend.dart';
 import 'package:bankon/Frontend/Drawer.dart';
+import 'BankDataPage.dart';
 import 'AccountDataPage.dart';
 
 final Color backgroundColor = Colors.white;
@@ -22,25 +23,17 @@ class _MenuDashbordState extends State<MenuDashbord>
   bool isCollapsed = true;
   double screenWidth, screenHeigh;
   final Duration duration = const Duration(milliseconds: 100);
-  AnimationController _controller;
-  Animation<double> _scaleAnimation;
-  Animation<double> _menuScaleAnimation;
-  Animation<Offset> _slideAnimation;
+
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: duration);
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(_controller);
-    _menuScaleAnimation =
-        Tween<double>(begin: 0.5, end: 1).animate(_controller);
-    _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
-        .animate(_controller);
+
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+
     super.dispose();
   }
 
@@ -92,8 +85,16 @@ class _MenuDashbordState extends State<MenuDashbord>
                           //Here is all the banks that we added with bank info. Picture and associated route to their own pages
                           return InkWell(
                             onTap: () {
-                              Navigator.of(context)
-                                  .pushNamed('/BankDataSliverPage');
+                              Backend.getAccounts(accountList[index].getBankData());
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          BankDataPage(
+                                            BankData:
+                                            item.getBankData().bank,
+                                          )));
+
                             },
                             child: item.buildBankItem(context),
                           );

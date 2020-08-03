@@ -58,7 +58,7 @@ class _InitTransactionState extends State<InitTransaction>
           child: AppBar(
             leading: InkWell(
               onTap: (){
-                Navigator.pushNamed(context, '/BankDataSliverPage');
+                Navigator.pushNamed(context, '/BankDataPage');
 
               },
               child: Icon(

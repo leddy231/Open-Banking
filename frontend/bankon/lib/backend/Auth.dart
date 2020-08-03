@@ -5,6 +5,8 @@ import 'package:uni_links/uni_links.dart';
 import './Account.dart';
 import 'dart:async';
 
+
+
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
 enum LoginStatus {
@@ -121,7 +123,7 @@ class Auth {
         .snapshots()
         .map((doc) => doc['transaction']
             .map(
-                (transactiondata) => Transaction.fromJson(transactiondata, acc))
+                (transactiondata) => Transactions.fromJson(transactiondata, acc))
             .toList());
   }
 

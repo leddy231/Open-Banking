@@ -1,6 +1,8 @@
+import 'package:decimal/decimal.dart';
 import 'package:bankon/backend/Account.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'Drawer.dart';
 import '../backend/Auth.dart';
 import 'AccountDataPage.dart';
@@ -8,14 +10,20 @@ import 'AccountDataPage.dart';
 final Color backgroundColor = Colors.white;
 int bankDataLength;
 
-class BankData extends StatefulWidget {
+class BankDataPage extends StatefulWidget {
+  final Bank BankData;
+
+  BankDataPage({Key key, @required this.BankData}) : super(key: key);
   //Todo: Add bank retrieve data and uppdate bankdata.length so list matches. Before the page is loaded
 
   @override
-  _BankDataState createState() => _BankDataState();
+  _BankDataState createState() => _BankDataState(BankData);
 }
 
-class _BankDataState extends State<BankData> with TickerProviderStateMixin {
+class _BankDataState extends State<BankDataPage> with TickerProviderStateMixin {
+  Bank BankData;
+
+  _BankDataState(this.BankData);
   final List<Tab> BankTabs = <Tab>[
     Tab(
       text: "Konton",
@@ -34,208 +42,202 @@ class _BankDataState extends State<BankData> with TickerProviderStateMixin {
   bool isCollapsed = true;
   double screenWidth, screenHeigh;
   final Duration duration = const Duration(milliseconds: 100);
-  AnimationController _controller;
-  Animation<double> _scaleAnimation;
-  Animation<double> _menuScaleAnimation;
-  Animation<Offset> _slideAnimation;
   TabController _tabController;
+  int tabPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: duration);
-    _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(_controller);
-    _menuScaleAnimation =
-        Tween<double>(begin: 0.5, end: 1).animate(_controller);
-    _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
-        .animate(_controller);
     _tabController = TabController(vsync: this, length: BankTabs.length);
+    _tabController.addListener(_handleTabIndex);
+  }
+
+  void _handleTabIndex() {
+    setState(() {
+      tabPage = _tabController.index;
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _tabController.removeListener(_handleTabIndex);
     _tabController.dispose();
     super.dispose();
   }
 
 //test
-
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    screenHeigh = size.height;
-    screenWidth = size.width;
-    return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(45),
-          child: AppBar(
-            backgroundColor: Colors.lightGreen,
-            flexibleSpace: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    SizedBox(
-                      width: 40,
-                    ),
-                    Expanded(
-                      child: TabBar(
-                        indicatorWeight: 2,
-                        isScrollable: true,
-                        indicatorColor: Colors.white,
-                        controller: _tabController,
-                        tabs: BankTabs,
+    return Material(
+      child: Scaffold(
+          body: NestedScrollView(
+              headerSliverBuilder: (context, value) {
+                return [
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                        context),
+                    sliver: SliverAppBar(
+                      leading: InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/menu');
+                        },
+                        child: Icon(Icons.keyboard_backspace),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                    //Todo: Fixa dropdown klart.
-                    DropdownButton(
-                      icon: Icon(
-                        Icons.more_vert,
-                        color: Colors.white,
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-        drawer: GeneralDrawer(),
-        backgroundColor: backgroundColor,
-        body: Stack(
-          children: <Widget>[
-            menu(context),
-          ],
-        ));
-  }
+                      backgroundColor: Colors.lightGreen,
+                      pinned: true,
+                      floating: false,
+                      flexibleSpace: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              SizedBox(
+                                width: 40,
+                              ),
+                              Expanded(
+                                child: TabBar(
+                                  indicatorWeight: 2,
+                                  isScrollable: true,
+                                  indicatorColor: Colors.white,
+                                  controller: _tabController,
+                                  tabs: BankTabs,
+                                ),
+                              ),
 
-  Widget menu(context) {
-    return Container(
-      child: TabBarView(
-        controller: _tabController,
-        children: <Widget>[
-          accounts(context),
-          savings(context),
-          loans(context),
-          invoice(context)
-        ],
-      ),
+                              SizedBox(width: 10),
+                              //Todo: Fixa dropdown klart.
+                              DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  icon: Icon(
+                                    Icons.more_vert,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ];
+              },
+              body: menu(context)),
+          drawer: GeneralDrawer(),
+          backgroundColor: backgroundColor,
+          floatingActionButton: _tabActionButton(tabPage, context)),
     );
   }
 
-  Widget accounts(context) {
-    setState(() {});
-    return Column(
+  Widget menu(context) {
+    return TabBarView(
+      controller: _tabController,
       children: <Widget>[
-        Container(
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Text(
-                  "Temporay placeholder for financial graph data",
-                  textAlign: TextAlign.center,
-                ),
-                // Expanded(...)
-              ],
-            ),
-          ),
-          height: 200,
-          decoration: BoxDecoration(color: Colors.blueAccent),
-        ),
-        Container(
-          child: StreamBuilder(
-            stream: Auth.accounts(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if (snapshot.hasData) {
-                List<dynamic> accountList = snapshot.data
-                    .map((account) => accountItem(account))
-                    .toList();
-                int sum = 0;
-                for (var i = 0; i < accountList.length; i++) {
-                  sum += int.parse(accountList[i].getAccountData().balance);
-                }
-                return Column(
-                  children: <Widget>[
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.only(
-                              left: 16.0, right: 16.0, top: 2),
-                          child: Text("Total balance:  " + sum.toString(),
-                              textAlign: TextAlign.right,
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
-                        ),
-                      ],
-                    ),
-                    ListView.separated(
-                      shrinkWrap: true,
-                      itemCount: accountList.length ?? 1,
-                      itemBuilder: (context, index) {
-                        final item = accountList[index];
-
-                        //Here is all the banks that we added with bank info. Picture and associated route to their own pages
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => AccountDataPage(
-                                          AccountData: item.getAccountData(),
-                                        )));
-                          },
-                          child: item.buildAccountItem(context),
-                        );
-                      },
-
-                      //add same here as for itemBuilder
-                      separatorBuilder: (context, index) {
-                        return Divider();
-                      },
-                    ),
-                  ],
-                );
-              } else {
-                return Container(
-                  child: Text("loading"),
-                );
-              }
-            },
-          ),
-        ),
+        accounts(context),
+        savings(context),
+        loans(context),
+        invoice(context)
       ],
     );
   }
 
+  Widget accounts(context) {
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: Builder(
+        builder: (BuildContext context) {
+          return NotificationListener<ScrollNotification>(
+            onNotification: (scrollNotification) {
+              return true;
+            },
+            //Todo: Add check to see that it is loading the correct bank accounts
+            child: StreamBuilder(
+                stream: Auth.accounts(),
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    List<dynamic> accountList = snapshot.data
+                        .map((account) => accountItem(account))
+                        .toList();
+                    Decimal sum = Decimal.parse('0');
+                    for (var i = 0; i < accountList.length; i++) {
+                      sum += Decimal.parse(
+                          accountList[i].getAccountData().balance);
+                    }
+                    //Todo: Plocka ut dem och skapa en ny klass dit man skickar en ny sån grej.
+                    return RefreshIndicator(
+                      onRefresh: () {
+                        return accountList = getNewData();
+                      },
+                      child: CustomScrollView(
+                        slivers: <Widget>[
+                          SliverOverlapInjector(
+                            handle:
+                                NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                    context),
+                          ),
+                          SliverPersistentHeader(
+                            pinned: true,
+                            delegate: _SliverAppBarDelegate(sum),
+                          ),
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                                final item = accountList[index];
+                                if (item.getAccountData().bank == BankData){
+                                  return InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AccountDataPage(
+                                                      AccountData:
+                                                      item.getAccountData(),
+                                                    )));
+                                      });
+                                    },
+                                    child: item.buildAccountItem(context),
+                                  );
+                                }else{
+                                  return Container();
+                                }
+
+
+                              },
+                              childCount: accountList.length ?? 1,
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  } else {
+                    return Column(
+                        children: <Widget>[CircularProgressIndicator()]);
+                  }
+                }),
+          );
+        },
+      ),
+    );
+  }
+
   Widget savings(context) {
-    setState(() {});
     return Container(
       child: Text("test2"),
     );
   }
 
   Widget loans(context) {
-    setState(() {});
     return Container(
       child: Text("test3"),
     );
   }
 
   Widget invoice(context) {
-    setState(() {});
     return Container(
       child: Text("test4"),
     );
@@ -326,4 +328,57 @@ List<DropdownMenuItem> getAccountDropDownItems() {
       )));
 
   return items;
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final sum;
+
+  _SliverAppBarDelegate(this.sum);
+
+  @override
+  double get minExtent => 20;
+
+  @override
+  double get maxExtent => 40;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return new Container(
+      child: Column(
+        children: <Widget>[
+          Text("Total balance:  " + sum.toString(),
+              textAlign: TextAlign.right,
+              style: TextStyle(color: Colors.black, fontSize: 15)),
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
+  }
+}
+
+getNewData() async {
+  return await Auth.accounts().map((account) => accountItem).toList();
+}
+
+Widget _tabActionButton(int tabPage, BuildContext context) {
+  return Visibility(
+    visible: tabPage == 0,
+    child: FloatingActionButton(
+        shape: StadiumBorder(),
+        onPressed: () {
+          Navigator.of(context).pushNamed('/InitTransaction');
+        },
+        elevation: 8,
+        tooltip: "Add Transaction",
+        backgroundColor: Colors.lightGreen,
+        child: Icon(
+          Icons.add,
+          size: 20.0,
+        )),
+  );
 }

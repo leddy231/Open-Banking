@@ -1,5 +1,5 @@
 import 'package:bankon/Frontend/AccountDataPage.dart';
-import 'package:bankon/Frontend/BankDataSliverPage.dart';
+import 'package:bankon/Frontend/BankDataPage.dart';
 import 'package:bankon/Frontend/InitiateTransaction.dart';
 
 import './settings.dart';
@@ -9,9 +9,9 @@ import 'forgotPassword.dart';
 import 'signup.dart';
 import 'menuDashbordLayout.dart';
 import 'BankSelectionPage.dart';
-import 'BankDataPage.dart';
+
 import '../backend/Auth.dart';
-import 'BankDataSliverPage.dart';
+import 'BankDataPage.dart';
 import 'InitiateTransaction.dart';
 
 void main() {
@@ -32,9 +32,9 @@ class BankonApp extends StatelessWidget {
     '/menu': (BuildContext context) => new MenuDashbord(),
     '/bankSelect': (BuildContext context) => new bankList(),
     '/settings': (BuildContext context) => new settings(),
-    '/BankDataPage': (BuildContext context) => new BankData(),
+    '/BankDataPage': (BuildContext context) => new BankDataPage(),
     '/startPage': (BuildContext context) => new BankonApp(),
-    '/BankDataSliverPage': (BuildContext context) => new BankSliverDataPage(),
+
     '/InitTransaction' : (BuildContext context) => new InitTransaction(),
 
     },
