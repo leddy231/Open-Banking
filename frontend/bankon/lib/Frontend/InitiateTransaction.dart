@@ -6,16 +6,22 @@ import '../backend/Account.dart';
 import '../backend/Backend.dart';
 import 'package:bankon/Frontend/Drawer.dart';
 import 'AccountDataPage.dart';
-
+import 'BankDataPage.dart';
 final Color backgroundColor = Colors.white;
 
 class InitTransaction extends StatefulWidget {
+  final Bank BankData;
+
+  InitTransaction({Key key, @required this.BankData}) : super(key: key);
   @override
-  _InitTransactionState createState() => _InitTransactionState();
+  _InitTransactionState createState() => _InitTransactionState(BankData);
 }
 
 class _InitTransactionState extends State<InitTransaction>
     with SingleTickerProviderStateMixin {
+  Bank BankData;
+
+  _InitTransactionState(this.BankData);
   double screenWidth, screenHeigh;
   FocusNode _focusNodeReciver;
   TextEditingController _recieverTextController;
@@ -58,7 +64,14 @@ class _InitTransactionState extends State<InitTransaction>
           child: AppBar(
             leading: InkWell(
               onTap: (){
-                Navigator.pushNamed(context, '/BankDataPage');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BankDataPage(
+                                BankData:
+                                BankData
+                            )));
 
               },
               child: Icon(

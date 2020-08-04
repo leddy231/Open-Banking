@@ -1,3 +1,4 @@
+import 'package:bankon/Frontend/InitiateTransaction.dart';
 import 'package:decimal/decimal.dart';
 import 'package:bankon/backend/Account.dart';
 import 'package:flutter/cupertino.dart';
@@ -127,7 +128,7 @@ class _BankDataState extends State<BankDataPage> with TickerProviderStateMixin {
               body: menu(context)),
           drawer: GeneralDrawer(),
           backgroundColor: backgroundColor,
-          floatingActionButton: _tabActionButton(tabPage, context)),
+          floatingActionButton: _tabActionButton(tabPage, context,BankData)),
     );
   }
 
@@ -365,13 +366,20 @@ getNewData() async {
   return await Auth.accounts().map((account) => accountItem).toList();
 }
 
-Widget _tabActionButton(int tabPage, BuildContext context) {
+Widget _tabActionButton(int tabPage, BuildContext context,Bank BankData) {
   return Visibility(
     visible: tabPage == 0,
     child: FloatingActionButton(
         shape: StadiumBorder(),
         onPressed: () {
-          Navigator.of(context).pushNamed('/InitTransaction');
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      InitTransaction(
+                          BankData:
+                          BankData
+                      )));
         },
         elevation: 8,
         tooltip: "Add Transaction",
