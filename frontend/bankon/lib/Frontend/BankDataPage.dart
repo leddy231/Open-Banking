@@ -196,8 +196,9 @@ class _BankDataState extends State<BankDataPage> with TickerProviderStateMixin {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     AccountDataPage(
-                                                      AccountData:
-                                                      item.getAccountData(),
+                                                      BankData:
+                                                      item.getAccountData().bank,
+                                                      AccountData: item.getAccountData(),
                                                     )));
                                       });
                                     },

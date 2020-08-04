@@ -85,7 +85,12 @@ class _MenuDashbordState extends State<MenuDashbord>
                           //Here is all the banks that we added with bank info. Picture and associated route to their own pages
                           return InkWell(
                             onTap: () {
+
+                             if(accountList[index].getBankData().bank.name == 'swedbank' && accountList[index].getBankData().consent == false){
+                               Backend.getConsent(accountList[index].getBankData());
+                             }
                               Backend.getAccounts(accountList[index].getBankData());
+                             Backend.getAccountDetails(accountList[index].getBankData());
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
