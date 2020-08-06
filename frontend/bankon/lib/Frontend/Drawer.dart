@@ -28,6 +28,14 @@ class GeneralDrawer extends StatelessWidget {
               leading: Icon(Icons.account_balance),
               title: Text('My banks'),
             ),
+          ),InkWell(
+            onTap: () {
+              Navigator.of(context).pushNamed('/InovicePage');
+            },
+            child: ListTile(
+              leading: Icon(Icons.find_in_page),
+              title: Text('Invoices'),
+            ),
           ),
           InkWell(
             onTap: () {},

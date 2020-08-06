@@ -123,6 +123,7 @@ class _BankDataState extends State<BankDataPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
+
                 ];
               },
               body: menu(context)),

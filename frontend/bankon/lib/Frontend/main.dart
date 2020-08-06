@@ -1,6 +1,7 @@
 import 'package:bankon/Frontend/AccountDataPage.dart';
 import 'package:bankon/Frontend/BankDataPage.dart';
 import 'package:bankon/Frontend/InitiateTransaction.dart';
+import 'package:bankon/Frontend/Inovice.dart';
 
 import './settings.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class BankonApp extends StatelessWidget {
     '/settings': (BuildContext context) => new settings(),
     '/BankDataPage': (BuildContext context) => new BankDataPage(),
     '/startPage': (BuildContext context) => new BankonApp(),
-
+    '/InovicePage' : (BuildContext context) => new InovicePage(),
     '/InitTransaction' : (BuildContext context) => new InitTransaction(),
 
     },
