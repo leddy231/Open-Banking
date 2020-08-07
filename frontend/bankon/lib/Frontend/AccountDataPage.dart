@@ -50,9 +50,19 @@ class _AccountDataState extends State<AccountDataPage>
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
-        appBar: AppBar(
-backgroundColor: Colors.lightGreen,
-        ),
+          appBar: AppBar(
+            leading: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            BankDataPage(BankData: BankData)));
+              },
+              child: Icon(Icons.keyboard_backspace),
+            ),
+            backgroundColor: Colors.lightGreen,
+          ),
           body: accounts(context),
           drawer: GeneralDrawer(),
           backgroundColor: backgroundColor,
@@ -107,12 +117,6 @@ backgroundColor: Colors.lightGreen,
       ),
     );
   }
-
-
-
-
-
-
 }
 
 //Todo: Create class for generating account finansial report graph.

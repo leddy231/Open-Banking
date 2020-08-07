@@ -1,5 +1,6 @@
 import 'package:bankon/Frontend/AccountDataPage.dart';
 import 'package:bankon/Frontend/BankDataPage.dart';
+import 'package:bankon/Frontend/InitiateInovice.dart';
 import 'package:bankon/Frontend/InitiateTransaction.dart';
 import 'package:bankon/Frontend/Inovice.dart';
 
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'forgotPassword.dart';
 import 'signup.dart';
-import 'menuDashbordLayout.dart';
+import 'MainBankPage.dart';
 import 'BankSelectionPage.dart';
 
 import '../backend/Auth.dart';
@@ -27,18 +28,18 @@ class BankonApp extends StatelessWidget {
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
-    '/signup': (BuildContext context) => new SignupPage(),
-    '/login': (BuildContext context) => new MainLoginPage(),
-    '/resetPass': (BuildContext context) => new resetPass(),
-    '/menu': (BuildContext context) => new MenuDashbord(),
-    '/bankSelect': (BuildContext context) => new bankList(),
-    '/settings': (BuildContext context) => new settings(),
-    '/BankDataPage': (BuildContext context) => new BankDataPage(),
-    '/startPage': (BuildContext context) => new BankonApp(),
-    '/InovicePage' : (BuildContext context) => new InovicePage(),
-    '/InitTransaction' : (BuildContext context) => new InitTransaction(),
-
-    },
+        '/signup': (BuildContext context) => new SignupPage(),
+        '/login': (BuildContext context) => new MainLoginPage(),
+        '/resetPass': (BuildContext context) => new resetPass(),
+        '/menu': (BuildContext context) => new MenuDashbord(),
+        '/bankSelect': (BuildContext context) => new bankList(),
+        '/settings': (BuildContext context) => new settings(),
+        '/BankDataPage': (BuildContext context) => new BankDataPage(),
+        '/startPage': (BuildContext context) => new BankonApp(),
+        '/InovicePage': (BuildContext context) => new InovicePage(),
+        '/InitTransaction': (BuildContext context) => new InitTransaction(),
+        '/InitInovice': (BuildContext context) => new InitInovice(),
+      },
       home: new MainLoginPage(),
     );
   }
@@ -289,12 +290,9 @@ class _MainLoginPageState extends State<MainLoginPage> {
     LoginStatus recived = await Auth.signIn(
         _emailTextController.text, _passwordTextController.text);
 
-
     setState(() {
       logginStatus = recived.show();
       logginStatusVisible = true;
     });
   }
-
-
 }

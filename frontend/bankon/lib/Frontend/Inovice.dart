@@ -69,14 +69,10 @@ class _InoviceState extends State<InovicePage> with TickerProviderStateMixin {
                   backgroundColor: Colors.lightGreen,
                   pinned: true,
                   floating: false,
-
-
-
                   flexibleSpace: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
@@ -85,7 +81,6 @@ class _InoviceState extends State<InovicePage> with TickerProviderStateMixin {
                           ),
                           Expanded(
                             child: TabBar(
-
                               indicatorWeight: 2,
                               isScrollable: true,
                               indicatorColor: Colors.white,
@@ -106,7 +101,6 @@ class _InoviceState extends State<InovicePage> with TickerProviderStateMixin {
                           )
                         ],
                       ),
-
                     ],
                   ),
                 ),
@@ -240,16 +234,16 @@ class InovicePersistentHeaderDeleagate extends SliverPersistentHeaderDelegate {
 Widget _inoviceInitButton(
   BuildContext context,
 ) {
-  return  FloatingActionButton(
-        shape: StadiumBorder(),
-        onPressed: () {
-
-        },
-        elevation: 8,
-        tooltip: "Add Inovice",
-        backgroundColor: Colors.lightGreen,
-        child: Icon(
-          Icons.add,
-          size: 20.0,
-        ));
+  return FloatingActionButton(
+      shape: StadiumBorder(),
+      onPressed: () {
+        Navigator.of(context).pushNamed('/InitInovice');
+      },
+      elevation: 8,
+      tooltip: "Add Inovice",
+      backgroundColor: Colors.lightGreen,
+      child: Icon(
+        Icons.add,
+        size: 20.0,
+      ));
 }
