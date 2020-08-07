@@ -1,25 +1,5 @@
 import 'Backend.dart';
-
-class BankAccount {
-  final String accesstoken;
-  final Bank bank;
-  final bool consent;
-
-  BankAccount(this.accesstoken, this.consent, this.bank) {
-    bank.account = this;
-  }
-}
-
-class Bank {
-  final String name;
-  final String redirecturl;
-  final String iconurl;
-  BankAccount account;
-
-  Bank(this.name, this.iconurl, this.redirecturl);
-
-  String toString() => 'Bank<$name>';
-}
+import 'Bank.dart';
 
 enum AccountNrType {
   iban,
@@ -33,26 +13,6 @@ class AccountNr {
   AccountNr(this.number, this.type);
 
   String toString() => 'AccountNr<$type:$number>';
-}
-
-class Transactions {
-  final String amount;
-  final String currency;
-  final String date;
-  final bool pending;
-  final Account account;
-
-  Transactions(
-      {this.amount, this.currency, this.date, this.pending, this.account});
-
-  static Transactions fromJson(Map<String, dynamic> data, Account acc) {
-    return Transactions(
-        amount: data['amount'],
-        currency: data['currency'],
-        date: data['date'],
-        pending: data['pending'],
-        account: acc);
-  }
 }
 
 class Account {

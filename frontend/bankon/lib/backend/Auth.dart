@@ -2,10 +2,7 @@ import './Backend.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uni_links/uni_links.dart';
-import './Account.dart';
 import 'dart:async';
-
-
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -74,57 +71,6 @@ class Auth {
     getInitialUri().then((link) => Auth.interceptLink(link));
     getUriLinksStream().listen((link) => Auth.interceptLink(link));
     Backend.getBanks();
-  }
-
-  static Stream<List<Account>> accounts() {
-    if (user == null) {
-      return Stream.empty();
-    }
-    return Firestore.instance
-        .collection('users')
-        .document(user.uid)
-        .collection('accounts')
-        .snapshots()
-        .map((snapshot) => snapshot.documents
-            .map((doc) => Account.fromJson(doc.data, user.uid))
-            .toList());
-  }
-
-  static Stream<List<BankAccount>> userbanks() {
-    if (user == null) {
-      return Stream.empty();
-    }
-    return Firestore.instance
-        .collection('users')
-        .document(user.uid)
-        .collection('banks')
-        .snapshots()
-        .map((snapshot) => snapshot.documents
-            .map((doc) => BankAccount(
-                doc.data['accesstoken'],
-                doc.data['consent'],
-                Backend.banks
-                    .firstWhere((bank) => bank.name == doc.documentID)))
-            .toList());
-  }
-
-  static Stream<List<Transaction>> transactions(Account acc) {
-    if (user == null) {
-      return Stream.empty();
-    }
-    if (acc.bank.account == null || acc.bank.account.consent == false) {
-      return Stream.empty();
-    }
-    return Firestore.instance
-        .collection('users')
-        .document(acc.userid)
-        .collection('accounts')
-        .document(acc.id)
-        .snapshots()
-        .map((doc) => doc['transaction']
-            .map(
-                (transactiondata) => Transactions.fromJson(transactiondata, acc))
-            .toList());
   }
 
   static void interceptLink(Uri link) async {
