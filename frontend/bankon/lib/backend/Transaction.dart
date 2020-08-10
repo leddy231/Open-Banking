@@ -10,10 +10,12 @@ class Transactions {
   Transactions(
       {this.amount, this.currency, this.date, this.pending, this.account});
 
-  Transactions.fromJson(Map<String, dynamic> data, Account acc)
+  Transactions.fromJson(dynamic data, Account acc)
       : amount = data['amount'],
         currency = data['currency'],
         date = data['date'],
         pending = data['pending'],
         account = acc;
+
+  toString() => "Transaction<$amount, $date>";
 }

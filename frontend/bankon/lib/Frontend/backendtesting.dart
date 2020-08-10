@@ -81,8 +81,10 @@ class _MainLoginPageState extends State<MainLoginPage> {
                                     .map(
                                       (e) => GestureDetector(
                                     onTap: () async {
-                                      String url = await Backend.getConsent(e.bank.account);
-                                      launch(url);
+                                      print('ello');
+                                      Database.transactions(e).listen(print);
+                                      //String url = await Backend.getConsent(e.bank.account);
+                                      //launch(url);
                                     },
                                     child: Row(
                                       children: [

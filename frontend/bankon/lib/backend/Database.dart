@@ -19,8 +19,9 @@ abstract class Database {
         .document(Auth.user.uid)
         .collection('contacts')
         .snapshots()
-        .map((snapshot) =>
-            snapshot.documents.map((doc) => Contact.fromJSON(doc.data)).toList());
+        .map((snapshot) => snapshot.documents
+            .map((doc) => Contact.fromJSON(doc.data))
+            .toList());
   }
 
   static Stream<List<BankAccount>> bankAccounts() {
@@ -57,7 +58,7 @@ abstract class Database {
             .toList());
   }
 
-  static Stream<List<Transactions>> transactions(Account acc) {
+  static Stream<dynamic> transactions(Account acc) {
     if (Auth.user == null) {
       return Stream.empty();
       throw "Tried to get transaction list with no logged in Firebase user";
@@ -65,15 +66,17 @@ abstract class Database {
     if (acc.bank.account == null || acc.bank.account.consent == false) {
       return Stream.empty();
     }
+
     return Firestore.instance
         .collection('users')
         .document(acc.userid)
         .collection('accounts')
         .document(acc.id)
         .snapshots()
-        .map((doc) => doc.data['transactions']
-            .map((transactiondata) =>
-                Transactions.fromJson(transactiondata, acc))
+        .map((doc) =>
+            doc.data['transactions'] != null ? doc.data['transactions'] : [])
+        .map((transactions) => transactions
+            .map((item) => Transactions.fromJson(item, acc))
             .toList());
   }
 
