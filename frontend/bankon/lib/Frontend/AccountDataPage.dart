@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bankon/Frontend/InitiateTransaction.dart';
 import 'package:decimal/decimal.dart';
 import 'package:bankon/backend/Account.dart';
@@ -7,6 +9,7 @@ import 'BankDataPage.dart';
 import 'Drawer.dart';
 import '../backend/Auth.dart';
 import 'AccountDataPage.dart';
+import 'package:bankon/backend/Backend.dart';
 
 final Color backgroundColor = Colors.white;
 int bankDataLength;
@@ -51,6 +54,7 @@ class _AccountDataState extends State<AccountDataPage>
     return Material(
       child: Scaffold(
           appBar: AppBar(
+            title: Text("Transactions"),
             leading: InkWell(
               onTap: () {
                 Navigator.push(
@@ -76,43 +80,33 @@ class _AccountDataState extends State<AccountDataPage>
       bottom: false,
       child: Builder(
         builder: (BuildContext context) {
-          return NotificationListener<ScrollNotification>(
-            onNotification: (scrollNotification) {
-              return true;
-            },
-            //Todo: Add check to see that it is loading the correct bank accounts
-            child: StreamBuilder(
-                stream: Auth.transactions(AccountData),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    List<dynamic> transactionList = snapshot.data
-                        .map((transactiondata) =>
-                            transactionItem(transactiondata))
-                        .toList();
-                    return CustomScrollView(
-                      slivers: <Widget>[
-                        SliverOverlapInjector(
-                          handle:
-                              NestedScrollView.sliverOverlapAbsorberHandleFor(
-                                  context),
+          return StreamBuilder(
+              stream: Database.transactions(AccountData),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  List<dynamic> transactionList = snapshot.data
+                      .map(
+                          (transactiondata) => transactionItem(transactiondata))
+                      .toList();
+                  return CustomScrollView(
+                    slivers: <Widget>[
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            final item = transactionList[index];
+
+                            return item.buildTransactionItem(context);
+                          },
+                          childCount: transactionList.length ?? 1,
                         ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                              final item = transactionList[index];
-                              return item.buildTransactionItem(context);
-                            },
-                            childCount: transactionList.length ?? 1,
-                          ),
-                        )
-                      ],
-                    );
-                  } else {
-                    return Column(
-                        children: <Widget>[CircularProgressIndicator()]);
-                  }
-                }),
-          );
+                      )
+                    ],
+                  );
+                } else {
+                  return Column(
+                      children: <Widget>[CircularProgressIndicator()]);
+                }
+              });
         },
       ),
     );
@@ -237,7 +231,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 getNewData() async {
-  return await Auth.accounts().map((account) => accountItem).toList();
+  return await Database.accounts().map((account) => accountItem).toList();
 }
 
 Widget _tabActionButton(BuildContext context, Bank BankData) {

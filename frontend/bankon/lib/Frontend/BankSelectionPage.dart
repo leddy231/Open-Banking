@@ -18,7 +18,7 @@ class bankList extends StatefulWidget {
 }
 
 generateListBankItem() async {
-  final List<Bank> banks = await Backend.getBanks();
+  final List<Bank> banks = await Database.getBanks();
   return List<ListBankItem>.generate(
       banks.length, (index) => BankItem(banks[index]));
 }

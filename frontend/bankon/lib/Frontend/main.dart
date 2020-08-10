@@ -15,10 +15,11 @@ import 'BankSelectionPage.dart';
 import '../backend/Auth.dart';
 import 'BankDataPage.dart';
 import 'InitiateTransaction.dart';
+import 'package:bankon/backend/Backend.dart';
 
 void main() {
   runApp(new BankonApp());
-  Auth.setup();
+  Backend.setup();
 }
 
 //Todo: Firebase loggin.

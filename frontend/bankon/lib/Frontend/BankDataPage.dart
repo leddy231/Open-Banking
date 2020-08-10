@@ -3,6 +3,7 @@ import 'package:decimal/decimal.dart';
 import 'package:bankon/backend/Account.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:bankon/backend/Backend.dart';
 
 import 'Drawer.dart';
 import '../backend/Auth.dart';
@@ -15,6 +16,7 @@ class BankDataPage extends StatefulWidget {
   final Bank BankData;
 
   BankDataPage({Key key, @required this.BankData}) : super(key: key);
+
   //Todo: Add bank retrieve data and uppdate bankdata.length so list matches. Before the page is loaded
 
   @override
@@ -25,6 +27,7 @@ class _BankDataState extends State<BankDataPage> with TickerProviderStateMixin {
   Bank BankData;
 
   _BankDataState(this.BankData);
+
   final List<Tab> BankTabs = <Tab>[
     Tab(
       text: "Konton",
@@ -123,13 +126,12 @@ class _BankDataState extends State<BankDataPage> with TickerProviderStateMixin {
                       ),
                     ),
                   ),
-
                 ];
               },
               body: menu(context)),
           drawer: GeneralDrawer(),
           backgroundColor: backgroundColor,
-          floatingActionButton: _tabActionButton(tabPage, context,BankData)),
+          floatingActionButton: _tabActionButton(tabPage, context, BankData)),
     );
   }
 
@@ -157,7 +159,7 @@ class _BankDataState extends State<BankDataPage> with TickerProviderStateMixin {
             },
             //Todo: Add check to see that it is loading the correct bank accounts
             child: StreamBuilder(
-                stream: Auth.accounts(),
+                stream: Database.accounts(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
                     List<dynamic> accountList = snapshot.data
@@ -188,7 +190,7 @@ class _BankDataState extends State<BankDataPage> with TickerProviderStateMixin {
                             delegate: SliverChildBuilderDelegate(
                               (BuildContext context, int index) {
                                 final item = accountList[index];
-                                if (item.getAccountData().bank == BankData){
+                                if (item.getAccountData().bank == BankData) {
                                   return InkWell(
                                     onTap: () {
                                       setState(() {
@@ -197,19 +199,19 @@ class _BankDataState extends State<BankDataPage> with TickerProviderStateMixin {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     AccountDataPage(
-                                                      BankData:
-                                                      item.getAccountData().bank,
-                                                      AccountData: item.getAccountData(),
+                                                      BankData: item
+                                                          .getAccountData()
+                                                          .bank,
+                                                      AccountData:
+                                                          item.getAccountData(),
                                                     )));
                                       });
                                     },
                                     child: item.buildAccountItem(context),
                                   );
-                                }else{
+                                } else {
                                   return Container();
                                 }
-
-
                               },
                               childCount: accountList.length ?? 1,
                             ),
@@ -365,10 +367,10 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 }
 
 getNewData() async {
-  return await Auth.accounts().map((account) => accountItem).toList();
+  return await Database.accounts().map((account) => accountItem).toList();
 }
 
-Widget _tabActionButton(int tabPage, BuildContext context,Bank BankData) {
+Widget _tabActionButton(int tabPage, BuildContext context, Bank BankData) {
   return Visibility(
     visible: tabPage == 0,
     child: FloatingActionButton(
@@ -377,11 +379,7 @@ Widget _tabActionButton(int tabPage, BuildContext context,Bank BankData) {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      InitTransaction(
-                          BankData:
-                          BankData
-                      )));
+                  builder: (context) => InitTransaction(BankData: BankData)));
         },
         elevation: 8,
         tooltip: "Add Transaction",
