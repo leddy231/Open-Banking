@@ -71,7 +71,7 @@ abstract class Database {
         .collection('accounts')
         .document(acc.id)
         .snapshots()
-        .map((doc) => doc['transactions']
+        .map((doc) => doc.data['transactions']
             .map((transactiondata) =>
                 Transactions.fromJson(transactiondata, acc))
             .toList());
