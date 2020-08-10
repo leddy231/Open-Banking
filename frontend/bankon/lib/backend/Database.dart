@@ -11,6 +11,7 @@ abstract class Database {
 
   static Stream<List<Contact>> contacts() {
     if (Auth.user == null) {
+      return Stream.empty();
       throw "Tried to get contacts list with no logged in Firebase user";
     }
     return Firestore.instance
@@ -24,6 +25,7 @@ abstract class Database {
 
   static Stream<List<BankAccount>> bankAccounts() {
     if (Auth.user == null) {
+      return Stream.empty();
       throw "Tried to get bankaccount list with no logged in Firebase user";
     }
     return Firestore.instance
@@ -42,6 +44,7 @@ abstract class Database {
 
   static Stream<List<Account>> accounts() {
     if (Auth.user == null) {
+      return Stream.empty();
       throw "Tried to get account list with no logged in Firebase user";
     }
     return Firestore.instance
@@ -56,6 +59,7 @@ abstract class Database {
 
   static Stream<List<Transactions>> transactions(Account acc) {
     if (Auth.user == null) {
+      return Stream.empty();
       throw "Tried to get transaction list with no logged in Firebase user";
     }
     if (acc.bank.account == null || acc.bank.account.consent == false) {
