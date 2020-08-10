@@ -12,8 +12,8 @@ class Transactions {
 
   Transactions.fromJson(Map<String, dynamic> data, Account acc)
       : amount = data['amount'],
-      currency = data['currency'],
-      date     = data['date'],
-      pending  = data['pending'],
-      account  = acc;
+        currency = data['currency'],
+        date = data['date'],
+        pending = data['pending'],
+        account = acc;
 }

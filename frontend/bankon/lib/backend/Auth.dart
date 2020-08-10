@@ -1,8 +1,6 @@
-import './Backend.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'Backend.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:uni_links/uni_links.dart';
-import 'dart:async';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -67,10 +65,9 @@ extension registerToString on RegisterStatus {
 class Auth {
   static FirebaseUser user;
 
-  static void setup() {
+  static void setupIntercept() {
     getInitialUri().then((link) => Auth.interceptLink(link));
     getUriLinksStream().listen((link) => Auth.interceptLink(link));
-    Backend.getBanks();
   }
 
   static void interceptLink(Uri link) async {

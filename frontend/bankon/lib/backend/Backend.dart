@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'Auth.dart';
 import 'Bank.dart';
 import 'Contact.dart';
+import 'Database.dart';
 
 export 'Account.dart';
 export 'Auth.dart';
@@ -13,6 +14,12 @@ export 'Database.dart';
 export 'Transaction.dart';
 
 abstract class Backend {
+  static void setup() {
+    //adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://bankon.leddy231.se/test"'
+    Auth.setupIntercept();
+    Database.getBanks();
+  }
+
   static Future<Map<String, dynamic>> post(
       String url, Map<String, String> query,
       [Map<String, dynamic> body]) async {

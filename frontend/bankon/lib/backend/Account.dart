@@ -1,5 +1,4 @@
 import 'Backend.dart';
-import 'Bank.dart';
 
 enum AccountNrType {
   iban,
@@ -41,7 +40,7 @@ class Account {
 
   static Account fromJson(Map<String, dynamic> data, String userid) {
     try {
-      var bank = Backend.banks.firstWhere((bank) => bank.name == data['bank']);
+      var bank = Database.banks.firstWhere((bank) => bank.name == data['bank']);
       List<AccountNr> numbers = [];
       data['account_numbers'].forEach((nr) {
         var type;

@@ -9,6 +9,7 @@ class Contact {
   final String city;
   final String country;
   String id;
+
   Contact(
       {this.name,
       this.orgnr,
@@ -22,26 +23,26 @@ class Contact {
       this.id});
 
   Contact.fromJSON(Map<String, dynamic> data, [this.id])
-      : name    = data['name'],
-      orgnr     = data['orgnr'],
-      reference = data['reference'],
-      phonenr   = data['phonenr'],
-      email     = data['email'],
-      address   = data['address'],
-      postnr    = data['postnr'],
-      city      = data['city'],
-      country   = data['country'];
+      : name = data['name'],
+        orgnr = data['orgnr'],
+        reference = data['reference'],
+        phonenr = data['phonenr'],
+        email = data['email'],
+        address = data['address'],
+        postnr = data['postnr'],
+        city = data['city'],
+        country = data['country'];
 
   Map<String, dynamic> toJSON() => {
-        'name'      : name,
-        'orgnr'     : orgnr,
-        'reference' : reference,
-        'phonenr'   : phonenr,
-        'email'     : email,
-        'address'   : address,
-        'postnr'    : postnr,
-        'city'      : city,
-        'country'   : country,
-        'id'        : id
+        'name': name,
+        'orgnr': orgnr,
+        'reference': reference,
+        'phonenr': phonenr,
+        'email': email,
+        'address': address,
+        'postnr': postnr,
+        'city': city,
+        'country': country,
+        'id': id
       };
 }

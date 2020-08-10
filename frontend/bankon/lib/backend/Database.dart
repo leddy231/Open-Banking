@@ -18,9 +18,8 @@ abstract class Database {
         .document(Auth.user.uid)
         .collection('contacts')
         .snapshots()
-        .map((snapshot) => snapshot.documents
-            .map((doc) => Contact.fromJSON(doc))
-            .toList());
+        .map((snapshot) =>
+            snapshot.documents.map((doc) => Contact.fromJSON(doc.data)).toList());
   }
 
   static Stream<List<BankAccount>> bankAccounts() {

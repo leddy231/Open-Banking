@@ -1,16 +1,13 @@
 import 'package:bankon/backend/Backend.dart';
 import 'package:flutter/material.dart';
-import '../backend/Auth.dart';
-import '../backend/Account.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(new BankonApp());
-  Auth.setup();
+  Backend.setup();
   Auth.signIn("test@test.com", "testtest");
 }
-//adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://bankon.leddy231.se/test"'
 
 class BankonApp extends StatelessWidget {
   @override
@@ -48,7 +45,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
                   children: [
                     Text(user.email),
                     FutureBuilder<List<Bank>>(
-                      future: Backend.getBanks(),
+                      future: Database.getBanks(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Column(children: [
@@ -60,7 +57,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
                                   .toList(),
                             ),
                             StreamBuilder<List<BankAccount>>(
-                              stream: Auth.userbanks(),
+                              stream: Database.bankAccounts(),
                               builder: (context, snapshot) => Column(
                                 children: snapshot.data
                                     .map(
@@ -78,7 +75,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
                               ),
                               initialData: [],
                             ),StreamBuilder<List<Account>>(
-                              stream: Auth.accounts(),
+                              stream: Database.accounts(),
                               builder: (context, snapshot) => Column(
                                 children: snapshot.data
                                     .map(
