@@ -1,12 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../backend/Auth.dart';
-import '../backend/Account.dart';
 import '../backend/Backend.dart';
 import 'package:bankon/Frontend/Drawer.dart';
-import 'AccountDataPage.dart';
-import 'BankDataPage.dart';
+import 'package:calendarro/calendarro.dart';
 
 final Color backgroundColor = Colors.white;
 
@@ -25,24 +21,37 @@ class _InitInoviceState extends State<InitInovice>
 
   double screenWidth, screenHeigh;
   FocusNode _focusNodeReciver;
-  TextEditingController _recieverTextController;
-  TextEditingController _ocrTextController;
-  TextEditingController _amountTextController;
-  TextEditingController _dateTextController;
-  TextEditingController _senderTextController;
-  TextEditingController _noteTextController;
+
+  TextEditingController _NameBankonTextEditingController;
+  TextEditingController _BankonIdTextEditingController;
+  TextEditingController _NameRegularTextEditingController;
+  TextEditingController _OrgNrTextEditingController;
+  TextEditingController _ReferenceTextEditingController;
+  TextEditingController _PhoneTextEditingController;
+  TextEditingController _EmailTextEditingController;
+  TextEditingController _COTextEditingController;
+  TextEditingController _AdressTextEditingController;
+  TextEditingController _PostalCodeTextEditingController;
+  TextEditingController _CityTextEditingController;
+  TextEditingController _countryTextEditingController;
 
   @override
   void initState() {
     super.initState();
     _focusNodeReciver = new FocusNode();
     _focusNodeReciver.addListener(_onFocusNodeRecieverEvent);
-    _recieverTextController = new TextEditingController();
-    _ocrTextController = new TextEditingController();
-    _dateTextController = new TextEditingController();
-    _amountTextController = new TextEditingController();
-    _senderTextController = new TextEditingController();
-    _noteTextController = new TextEditingController();
+    _NameBankonTextEditingController = new TextEditingController();
+    _BankonIdTextEditingController = new TextEditingController();
+    _NameRegularTextEditingController = new TextEditingController();
+    _OrgNrTextEditingController = new TextEditingController();
+    _ReferenceTextEditingController = new TextEditingController();
+    _PhoneTextEditingController = new TextEditingController();
+    _EmailTextEditingController = new TextEditingController();
+    _COTextEditingController = new TextEditingController();
+    _AdressTextEditingController = new TextEditingController();
+    _PostalCodeTextEditingController = new TextEditingController();
+    _CityTextEditingController = new TextEditingController();
+    _countryTextEditingController = new TextEditingController();
   }
 
   _onFocusNodeRecieverEvent() {
@@ -73,52 +82,68 @@ class _InitInoviceState extends State<InitInovice>
       children: <Widget>[
         Column(
           children: <Widget>[
+            Calendarro(
+              startDate: DateTime.parse('2012-02-27'),
+              endDate: DateTime.now(),
+              displayMode: DisplayMode.MONTHS,
+              selectionMode: SelectionMode.MULTI,
+            ),
             Container(
               height: 40,
-              child: Material(
-                borderRadius: BorderRadius.circular(30.0),
-                shadowColor: Colors.greenAccent,
-                color: Colors.lightGreen,
-                elevation: 1.0,
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      stateHolder++;
-                    });
-                  },
-                  child: Center(
-                    child: Text(
-                      'Next',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Montserrat',
+              child: Padding(
+                padding: EdgeInsets.only(left: 50, right: 50),
+                child: Material(
+                  borderRadius: BorderRadius.circular(30.0),
+                  shadowColor: Colors.greenAccent,
+                  color: Colors.lightGreen,
+                  elevation: 1.0,
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        stateHolder++;
+                      });
+                    },
+                    child: Center(
+                      child: Text(
+                        'Next',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
             ),
+            SizedBox(
+              height: 3,
+
+            ),
             Container(
               height: 40,
-              child: Material(
-                borderRadius: BorderRadius.circular(30.0),
-                shadowColor: Colors.greenAccent,
-                color: Colors.lightGreen,
-                elevation: 1.0,
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      stateHolder--;
-                    });
-                  },
-                  child: Center(
-                    child: Text(
-                      'back',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Montserrat',
+              child: Padding(
+                padding: EdgeInsets.only(left: 50, right: 50),
+                child: Material(
+                  borderRadius: BorderRadius.circular(30.0),
+                  shadowColor: Colors.greenAccent,
+                  color: Colors.lightGreen,
+                  elevation: 1.0,
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        stateHolder--;
+                      });
+                    },
+                    child: Center(
+                      child: Text(
+                        'back',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Montserrat',
+                        ),
                       ),
                     ),
                   ),
@@ -146,16 +171,20 @@ class _InitInoviceState extends State<InitInovice>
                     width: 350,
                     child: StreamBuilder(
                         stream: Database.contacts(),
-                        builder:
-                            (BuildContext context, AsyncSnapshot<List<Contact>> snapshot) {
+                        builder: (BuildContext context,
+                            AsyncSnapshot<List<Contact>> snapshot) {
                           if (snapshot.hasData) {
                             Contacts = snapshot.data;
-                            if(Contacts.length == 0){
+                            if (Contacts.length == 0) {
                               return Padding(
-                                padding: EdgeInsets.only(top: 5,bottom: 5),
-                                child: Text("No Contacts Found",style: TextStyle(
-                                  fontSize: 20,
-                                ),textAlign: TextAlign.center,),
+                                padding: EdgeInsets.only(top: 5, bottom: 5),
+                                child: Text(
+                                  "No Contacts Found",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
                               );
                             }
                             return DropdownButtonHideUnderline(
@@ -179,13 +208,199 @@ class _InitInoviceState extends State<InitInovice>
                               ),
                             );
                           } else {
-                            return Column(
-                                children: <Widget>[CircularProgressIndicator()]);
+                            return Column(children: <Widget>[
+                              CircularProgressIndicator()
+                            ]);
                           }
                         })),
               ),
+              Container(
+                child: Text("Register Bankon Recipient"),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10, right: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.lightGreen)),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child: Column(
+                      children: <Widget>[
+                        TextFormField(
+                          controller: _NameBankonTextEditingController,
+                          cursorColor: Colors.green,
+                          decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green),
+                            ),
+                            hintText: "Name",
+                            focusColor: Colors.lightGreen,
+                          ),
+                        ),
+                        TextFormField(
+                          controller: _BankonIdTextEditingController,
+                          cursorColor: Colors.green,
+                          decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green),
+                            ),
+                            hintText: "Bankon Id",
+                            focusColor: Colors.lightGreen,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(
-                height: 450,
+                height: 10,
+              ),
+              Container(
+                child: Text("Register Regular Recipient"),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 10, right: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.lightGreen)),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child: Column(children: <Widget>[
+                      TextFormField(
+                        controller: _NameRegularTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
+                          hintText: "Name",
+                          focusColor: Colors.lightGreen,
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _OrgNrTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                          hintText: "Org Nr",
+                          focusColor: Colors.lightGreen,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        controller: _ReferenceTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green),
+                            ),
+                            hintText: "Reference",
+                            focusColor: Colors.lightGreen,
+                            border: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.lightGreen))),
+                      ),
+                      TextFormField(
+                        onTap: () {},
+                        controller: _PhoneTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                          hintText: "Phone Number",
+                          focusColor: Colors.lightGreen,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        onTap: () {},
+                        controller: _EmailTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                          hintText: "E-Mail",
+                          focusColor: Colors.lightGreen,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        onTap: () {},
+                        controller: _COTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                          hintText: "C/O",
+                          focusColor: Colors.lightGreen,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        onTap: () {},
+                        controller: _AdressTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                          hintText: "Adress",
+                          focusColor: Colors.lightGreen,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        onTap: () {},
+                        controller: _PostalCodeTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                          hintText: "Postal Code",
+                          focusColor: Colors.lightGreen,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        onTap: () {},
+                        controller: _CityTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                          hintText: "City",
+                          focusColor: Colors.lightGreen,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        onTap: () {},
+                        controller: _countryTextEditingController,
+                        cursorColor: Colors.green,
+                        decoration: InputDecoration(
+                          hintText: "Country",
+                          focusColor: Colors.lightGreen,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.green),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      )
+                    ]),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              SizedBox(
+                height: 10,
               ),
               Container(
                 height: 40,
@@ -215,6 +430,9 @@ class _InitInoviceState extends State<InitInovice>
                     ),
                   ),
                 ),
+              ),
+              SizedBox(
+                height: 10,
               )
             ],
           ),
@@ -223,153 +441,9 @@ class _InitInoviceState extends State<InitInovice>
     );
   }
 
-  Widget recipientBody1() {
-    return Stack(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(left: 10, right: 10),
-          child: SingleChildScrollView(
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.lightGreen)),
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      child: Column(children: <Widget>[
-                        TextFormField(
-                          controller: _recieverTextController,
-                          cursorColor: Colors.green,
-                          decoration: InputDecoration(
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green),
-                            ),
-                            hintText:
-                                "Supply Reciever Account, bg- or pg-number",
-                            focusColor: Colors.lightGreen,
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _ocrTextController,
-                          cursorColor: Colors.green,
-                          decoration: InputDecoration(
-                            hintText: "OCR",
-                            focusColor: Colors.lightGreen,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green),
-                            ),
-                          ),
-                        ),
-                        TextFormField(
-                          controller: _amountTextController,
-                          cursorColor: Colors.green,
-                          decoration: InputDecoration(
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.green),
-                              ),
-                              hintText: "Amount",
-                              focusColor: Colors.lightGreen,
-                              border: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.lightGreen))),
-                        ),
-                        TextFormField(
-                          onTap: () {},
-                          controller: _dateTextController,
-                          cursorColor: Colors.green,
-                          decoration: InputDecoration(
-                            hintText: "Date",
-                            focusColor: Colors.lightGreen,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.green),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        )
-                      ]),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.lightGreen)),
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 10, right: 10),
-                      child: Column(
-                        children: <Widget>[
-                          TextFormField(
-                            controller: _senderTextController,
-                            cursorColor: Colors.green,
-                            decoration: InputDecoration(
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.green),
-                              ),
-                              hintText: "Supply Sender Account",
-                              focusColor: Colors.lightGreen,
-                            ),
-                          ),
-                          TextFormField(
-                            controller: _noteTextController,
-                            cursorColor: Colors.green,
-                            decoration: InputDecoration(
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(color: Colors.green),
-                              ),
-                              hintText: "Personal Note",
-                              focusColor: Colors.lightGreen,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 200,
-                  ),
-                  Container(
-                    height: 40,
-                    child: Material(
-                      borderRadius: BorderRadius.circular(30.0),
-                      shadowColor: Colors.greenAccent,
-                      color: Colors.lightGreen,
-                      elevation: 1.0,
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            stateHolder++;
-                          });
-                        },
-                        child: Center(
-                          child: Text(
-                            'Send',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Montserrat',
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
+  Widget Costs() {
+    return Container(
+      child: Text("hej"),
     );
   }
 
@@ -396,7 +470,21 @@ class _InitInoviceState extends State<InitInovice>
         child: Icon(Icons.keyboard_backspace),
       ),
       elevation: 5,
-      title: Text("Specify Work"),
+      title: Text("Specify Work Days"),
+      backgroundColor: Colors.lightGreen,
+    );
+  }
+
+  Widget CostAppbar() {
+    return AppBar(
+      leading: InkWell(
+        onTap: () {
+          Navigator.of(context).pushNamed('/InovicePage');
+        },
+        child: Icon(Icons.keyboard_backspace),
+      ),
+      elevation: 5,
+      title: Text("Specify Costs"),
       backgroundColor: Colors.lightGreen,
     );
   }
@@ -406,6 +494,8 @@ class _InitInoviceState extends State<InitInovice>
       return recipientAppBar();
     } else if (stateHolder == 1) {
       return specificationsAppbar();
+    } else if (stateHolder == 2) {
+      return CostAppbar();
     } else
       return AppBar(
         leading: Text("ERROR"),
@@ -417,6 +507,8 @@ class _InitInoviceState extends State<InitInovice>
       return recipientBody();
     } else if (stateHolder == 1) {
       return specificationBody();
+    } else if (stateHolder == 2) {
+      return Costs();
     }
   }
 }
