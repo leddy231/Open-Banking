@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import '../backend/Backend.dart';
 import 'package:bankon/Frontend/Drawer.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -45,6 +46,7 @@ class _InitInoviceState extends State<InitInovice>
   TextEditingController _CityTextEditingController;
   TextEditingController _countryTextEditingController;
   TextEditingController _serviceCostController;
+  TextEditingController _descriptionTextEditingController;
 
   @override
   void initState() {
@@ -65,6 +67,7 @@ class _InitInoviceState extends State<InitInovice>
     _countryTextEditingController = new TextEditingController();
     _calendarController = new CalendarController();
     _serviceCostController = new TextEditingController();
+    _descriptionTextEditingController = new TextEditingController();
 
     _SelectedDays = [];
   }
@@ -656,17 +659,30 @@ class _InitInoviceState extends State<InitInovice>
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
+          SizedBox(
+            height: 20,
+          ),
+          Text("Add Description for Inovice, detailing service or product."),
           Padding(
-            padding: EdgeInsets.only(left: 10,right: 10,top: 10),
-            child: TextField(
-              textAlign: TextAlign.left,
-              keyboardType: TextInputType.multiline,
-              minLines: 1, //Normal textInputField will be displayed
-              maxLines: 30, // when user presses enter it will adapt to it
+            padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+            child: Container(
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.lightGreen)),
+              child: Padding(
+                padding: EdgeInsets.only(left: 5, right: 5),
+                child: TextField(
+                  controller: _descriptionTextEditingController,
+                  textAlign: TextAlign.left,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 10,
+                  minLines: 1,
+                  maxLength: 300,
+                ),
+              ),
             ),
           ),
           SizedBox(
-            height: 50,
+            height: 20,
           ),
           Container(
             height: 40,
@@ -731,6 +747,139 @@ class _InitInoviceState extends State<InitInovice>
           )
         ],
       ),
+    );
+  }
+
+  Widget OverViewBody() {
+    return SingleChildScrollView(
+      child: Column(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Container(
+              width: 400,
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.lightGreen)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text("Reciever"),
+                  Text(_NameRegularTextEditingController.text),
+                  Text(_AdressTextEditingController.text),
+                  Text(_PostalCodeTextEditingController.text +
+                      " " +
+                      _CityTextEditingController.text),
+                  Text(_countryTextEditingController.text),
+                  Text("Reference: " + _ReferenceTextEditingController.text),
+                  Text(SelectedMomsRateString),
+                  Text(_descriptionTextEditingController.text),
+                  Text(TotalCost),
+                  ListView.builder(
+                    itemCount: _SelectedDays.length,
+                    shrinkWrap: true,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: <Widget>[
+                          Container(
+                              child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Flexible(
+                                  flex: 2,
+                                  child: Text(
+                                      dateFormatting(_SelectedDays[index]))),
+                            ],
+                          )),
+                          SizedBox(
+                            height: 5,
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 29,
+          ),
+          Container(
+            height: 40,
+            child: Padding(
+              padding: EdgeInsets.only(left: 50, right: 50),
+              child: Material(
+                borderRadius: BorderRadius.circular(30.0),
+                shadowColor: Colors.greenAccent,
+                color: Colors.lightGreen,
+                elevation: 1.0,
+                child: InkWell(
+                  onTap: () {
+                    setState(() {});
+                  },
+                  child: Center(
+                    child: Text(
+                      'Send',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Montserrat',
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 3,
+          ),
+          Container(
+            height: 40,
+            child: Padding(
+              padding: EdgeInsets.only(left: 50, right: 50),
+              child: Material(
+                borderRadius: BorderRadius.circular(30.0),
+                shadowColor: Colors.greenAccent,
+                color: Colors.lightGreen,
+                elevation: 1.0,
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      stateHolder--;
+                    });
+                  },
+                  child: Center(
+                    child: Text(
+                      'back',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Montserrat',
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget OverViewAppbar() {
+    return AppBar(
+      leading: InkWell(
+        onTap: () {
+          Navigator.of(context).pushNamed('/InovicePage');
+        },
+        child: Icon(Icons.keyboard_backspace),
+      ),
+      elevation: 5,
+      title: Text("Overview"),
+      backgroundColor: Colors.lightGreen,
     );
   }
 
@@ -799,6 +948,8 @@ class _InitInoviceState extends State<InitInovice>
       return CostAppbar();
     } else if (stateHolder == 3) {
       return DescriptionAppbar();
+    } else if (stateHolder == 4) {
+      return OverViewAppbar();
     } else
       return AppBar(
         leading: Text("ERROR"),
@@ -814,6 +965,8 @@ class _InitInoviceState extends State<InitInovice>
       return Costs();
     } else if (stateHolder == 3) {
       return DescriptionBody();
+    } else if (stateHolder == 4) {
+      return OverViewBody();
     }
   }
 }
