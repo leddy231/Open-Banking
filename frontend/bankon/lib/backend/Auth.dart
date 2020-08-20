@@ -72,7 +72,7 @@ class Auth {
 
   static void setupLoginFix() {
     _auth.onAuthStateChanged.listen((u) {
-      if(u != null) {
+      if (u != null) {
         user = u;
       }
     });
@@ -164,4 +164,7 @@ class Auth {
     user = null;
     print("User Sign Out");
   }
+
+  static void resetPassword(String email) =>
+      _auth.sendPasswordResetEmail(email: email);
 }
