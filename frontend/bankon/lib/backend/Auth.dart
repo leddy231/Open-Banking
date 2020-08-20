@@ -70,6 +70,14 @@ class Auth {
     getUriLinksStream().listen((link) => Auth.interceptLink(link));
   }
 
+  static void setupLoginFix() {
+    _auth.onAuthStateChanged.listen((u) {
+      if(u != null) {
+        user = u;
+      }
+    });
+  }
+
   static void interceptLink(Uri link) async {
     if (link == null) {
       return;

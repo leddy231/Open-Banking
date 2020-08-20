@@ -12,11 +12,14 @@ export 'Bank.dart';
 export 'Contact.dart';
 export 'Database.dart';
 export 'Transaction.dart';
+export 'Profile.dart';
+export 'Faktura.dart';
 
 abstract class Backend {
   static void setup() {
     //adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://bankon.leddy231.se/test"'
     Auth.setupIntercept();
+    Auth.setupLoginFix();
     Database.getBanks();
   }
 
