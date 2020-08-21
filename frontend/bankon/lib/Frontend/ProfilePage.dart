@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 //Contains list of all the bank you can select.
-class SettingsPage extends StatefulWidget {
+class ProfilePage extends StatefulWidget {
   @override
-  _settingsState createState() => _settingsState();
+  _profileState createState() => _profileState();
 }
 
-class _settingsState extends State<SettingsPage> {
+class _profileState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold();

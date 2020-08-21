@@ -16,6 +16,7 @@ import '../backend/Auth.dart';
 import 'BankDataPage.dart';
 import 'InitiateTransaction.dart';
 import 'package:bankon/backend/Backend.dart';
+import 'ProfilePage.dart';
 
 void main() {
   runApp(new BankonApp());
@@ -34,12 +35,13 @@ class BankonApp extends StatelessWidget {
         '/resetPass': (BuildContext context) => new resetPass(),
         '/menu': (BuildContext context) => new MenuDashbord(),
         '/bankSelect': (BuildContext context) => new bankList(),
-        '/settings': (BuildContext context) => new settings(),
+        '/settings': (BuildContext context) => new SettingsPage(),
         '/BankDataPage': (BuildContext context) => new BankDataPage(),
         '/startPage': (BuildContext context) => new BankonApp(),
         '/InovicePage': (BuildContext context) => new InovicePage(),
         '/InitTransaction': (BuildContext context) => new InitTransaction(),
         '/InitInovice': (BuildContext context) => new InitInovice(),
+        '/Profile' : (BuildContext context) => new ProfilePage(),
       },
       home: new MainLoginPage(),
     );
@@ -64,6 +66,7 @@ class _MainLoginPageState extends State<MainLoginPage> {
     _emailTextController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {

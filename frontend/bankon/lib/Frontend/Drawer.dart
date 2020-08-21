@@ -38,14 +38,18 @@ class GeneralDrawer extends StatelessWidget {
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushNamed("/Profile");
+            },
             child: ListTile(
               leading: Icon(Icons.account_circle),
               title: Text('Profile'),
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).pushNamed("/settings");
+            },
             child: ListTile(
               leading: Icon(Icons.settings),
               title: Text('Settings'),
