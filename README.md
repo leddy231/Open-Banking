@@ -1,44 +1,10 @@
-# Open-Bakning
-Projekt Open Banking
+# Open-Banking
 
-SE Issues för workflow.
-Data Foulder: https://drive.google.com/drive/folders/1H_Pdt7EmuEMAPjYECzlvcUC2P2fEBK6A?usp=sharing
+This repo contains code from and Open-Banking Research and Development project during the summer of 2020
 
-Länkadress för redirrect auth: https://thebankonproject.se/
-
-MVP: ansluta bankerna, hämta ut samtliga data.
-
-Krav: Samtliga storbankers api
-
-Länkar till alla bankers APIsidor:
-* Nordea - https://developer.nordeaopenbanking.com/app/
-
-* Skandia - https://developer.skandia.se/open-banking/core-bank/
-
-* SEB - https://developer.sebgroup.com/
-
-* Länsförsäkringar - https://developer.bank.lansforsakringar.se/#/home/landing
-
-* Swedbank - https://www.swedbank.com/openbanking.html
-
-* HandelsBanken - https://developer.handelsbanken.com/
-
-* DanskeBank - https://developers.danskebank.com/
-
-* SBAB - https://developer.sbab.se/
+`/server` contains a prototype backend for commuicating with different swedish banks and providing a standardized API for the frontend.  
+Nodejs, express, Docker, PSD2/Open-Banking, Firebase Firestore
 
 
-Ta ut vilka som funkar med varrandra, vilka behöver special hantering
-
-Kolla skatteverket om det finns api
-
-
-
-Nätverks del
-
-Android del
-
-Frontend del
-
-Hantering mot bankid
-
+`/frontend` contains a flutter app project using this API to log in to banks, retreive account data and transaction data.  
+Flutter, Dart, Firebase Firestore
