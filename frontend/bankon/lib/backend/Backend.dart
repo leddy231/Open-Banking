@@ -17,7 +17,7 @@ export 'Faktura.dart';
 
 abstract class Backend {
   static void setup() {
-    //adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://bankon.leddy231.se/test"'
+    //adb shell 'am start -W -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://thebankonproject.se/test"'
     Auth.setupIntercept();
     Auth.setupLoginFix();
     Database.getBanks();
@@ -29,7 +29,7 @@ abstract class Backend {
     if (body == null) {
       body = {};
     }
-    final uri = Uri.https('bankon.leddy231.se', url, query);
+    final uri = Uri.https('thebankonproject.se', url, query);
     final response = await http.post(uri, body: jsonEncode(body));
 
     if (response.statusCode == 200) {

@@ -6,9 +6,9 @@ import moment from 'moment'
 
 const DateFormat = "ddd, DD MMM YYYY HH:mm:ssz"
 const DateFormatTransactions = "ddd, DD MMM YYYY"
-const client_id = 'l711da77f864d94e9997abeeb6879f9f31'
-const client_secret = '4c4e430bf39e4252b0ba4d30e15b9e47'
-//https://bankon.leddy231.se/auth?bank=swedbank&code=8d3bb423-d5ba-4f16-8586-fecd3f3f1dad
+const client_id = 'SWEDBANK_CLIENTID'
+const client_secret = 'SWEDBANK_SECRET'
+//https://thebankonproject.se/auth?bank=swedbank&code=8d3bb423-d5ba-4f16-8586-fecd3f3f1dad
 
 const swedbankAccountFilter = {
     "bank": cnst("swedbank"),
@@ -59,7 +59,7 @@ async function getConsent(req) {
             'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             'PSU-User-Agent': 'axios/0.19.2',
             'TPP-Redirect-Preferred': false,
-            'TPP-Redirect-URI': 'https://bankon.leddy231.se/auth?bank=swedbank',
+            'TPP-Redirect-URI': 'https://thebankonproject.se/auth?bank=swedbank',
             'TPP-Explicit-Authorisation-Preferred': false,
             'Content-Type': 'application/json'
         }
@@ -109,7 +109,7 @@ async function getDetailedConsent(req, accounts) {
             'PSU-IP-Address': req.headers['x-forwarded-for'] || req.connection.remoteAddress,
             'PSU-User-Agent': 'axios/0.19.2',
             'TPP-Redirect-Preferred': true,
-            'TPP-Redirect-URI': 'https://bankon.leddy231.se/validconsent?bank=swedbank&user=' + req.user.user_id,
+            'TPP-Redirect-URI': 'https://thebankonproject.se/validconsent?bank=swedbank&user=' + req.user.user_id,
             'Content-Type': 'application/json'
         }
         let ibanlist = accounts.map((acc) => {
@@ -142,7 +142,7 @@ async function parseAuthCode(req) {
             client_id: client_id,
             client_secret: client_secret,
             grant_type: "authorization_code",
-            redirect_uri: 'https://bankon.leddy231.se/auth?bank=swedbank',
+            redirect_uri: 'https://thebankonproject.se/auth?bank=swedbank',
             code: req.query.code,
         }
 
@@ -265,7 +265,7 @@ const auth = {
             client_id: client_id,
             response_type: 'code',
             scope: 'PSD2sandbox',
-            redirect_uri: 'https://bankon.leddy231.se/auth?bank=swedbank',
+            redirect_uri: 'https://thebankonproject.se/auth?bank=swedbank',
         }),
         parse: parseAuthCode
     }

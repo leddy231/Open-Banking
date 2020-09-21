@@ -6,8 +6,8 @@ import qs from 'querystring'
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const client_id = 'N48Hmiaxd7Jdm88CL37c'
-const client_secret = 'mT9Bki2coWwUeugyIqDX'
+const client_id = 'SEB_CLIENTID'
+const client_secret = 'SEB_SECRET'
 
 const sebAccountFilter = {
     "bank": cnst("seb"),
@@ -80,7 +80,7 @@ async function parseAuthCode(req) {
             client_id: client_id,
             client_secret: client_secret,
             code: req.query.code,
-            redirect_uri: 'https://bankon.leddy231.se/auth?bank=seb',
+            redirect_uri: 'https://thebankonproject.se/auth?bank=seb',
             grant_type: "authorization_code"
         }
 
@@ -101,7 +101,7 @@ const auth = {
         url: 'https://api-sandbox.sebgroup.com/mga/sps/oauth/oauth20/authorize?' + qs.encode({
             client_id: client_id,
             scope: "psd2_accounts psd2_payments",
-            redirect_uri: "https://bankon.leddy231.se/auth?bank=seb",
+            redirect_uri: "https://thebankonproject.se/auth?bank=seb",
             response_type: "code"
         }),
         parse: parseAuthCode
